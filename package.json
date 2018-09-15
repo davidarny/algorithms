@@ -1,0 +1,41 @@
+{
+    "name": "algorithms",
+    "version": "1.0.0",
+    "description": "Algorithms and Data Structures",
+    "main": "index.js",
+    "homepage": "https://github.com/DavidArutiunian/algorithms#readme",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DavidArutiunian/algorithms.git"
+    },
+    "bugs": {
+        "url": "https://github.com/DavidArutiunian/algorithms/issues",
+        "email": "arutunjan666@mail.com"
+    },
+    "directories": {
+        "lib": "lib",
+        "test": "test"
+    },
+    "scripts": {
+        "clean": "rimraf bin cmake-build",
+        "init": "mkdir cmake-build && cd cmake-build && cmake -DCMAKE_SH=\"CMAKE_SH-NOTFOUND\" -DCMAKE_BUILD_TYPE=Debug -G \"CodeBlocks - MinGW Makefiles\" ..",
+        "build": "cd cmake-build && cmake --build .",
+        "build:test": "cd cmake-build && cmake --build . --target Test",
+        "test": "npm run build:test && cd bin && Test"
+    },
+    "author": "David Arutiunian <arutunjan666@mail.com>",
+    "license": "ISC",
+    "devDependencies": {
+        "clang-format": "^1.2.4",
+        "husky": "^1.0.0-rc.14"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "git-clang-format && git add .",
+            "pre-push": "npm test"
+        }
+    },
+    "dependencies": {
+        "rimraf": "^2.6.2"
+    }
+}
