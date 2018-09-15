@@ -14,6 +14,12 @@ using TGroups = std::map<TString, std::tuple<TString, TString, TScores>>;
 class Converter
 {
 private:
+    enum EConverterOrder {
+        DEPARTMENT = 0,
+        GROUP,
+        AVERAGE_SCORE
+    };
+
     TTable m_table{};
     TGroups m_groups{};
     THeader m_header{

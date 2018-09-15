@@ -1,6 +1,5 @@
 #include <boost/algorithm/string.hpp>
 
-#include "EHeader.h"
 #include "Table.h"
 #include "Converter.h"
 
@@ -12,7 +11,7 @@ TString Converter::convert(const TTable &table)
         const bool isGroupFound = m_groups.count(group) != 0;
         TNumber score = static_cast<TNumber>(std::stoll(row.at(header_index(EHeader::AVERAGE_SCORE) + 1)));
         if (isGroupFound) {
-            std::get<2>(m_groups.at(group)).push_back(score);
+            std::get<AVERAGE_SCORE>(m_groups.at(group)).push_back(score);
         } else {
             m_groups.insert({
                                 group,
@@ -21,18 +20,19 @@ TString Converter::convert(const TTable &table)
         }
     }
     for (const auto &m_group : m_groups) {
+        auto& value = m_group.second;
         m_table.push_back({
-                              std::get<0>(std::get<1>(m_group)),
-                              std::get<0>(m_group),
-                              std::to_string(average_score_by_group(std::get<0>(m_group))),
-                          });
+            std::get<DEPARTMENT>(value),
+            std::get<GROUP>(value),
+            std::to_string(average_score_by_group(std::get<GROUP>(value))),
+        });
     }
     return get();
 }
 
 TNumber Converter::average_score_by_group(TString group)
 {
-    auto &scores = std::get<2>(m_groups.at(group));
+    auto& scores = std::get<AVERAGE_SCORE>(m_groups.at(group));
     TNumber average = 0;
     for (const auto &score : scores) {
         average += score;
@@ -64,7 +64,7 @@ TString Converter::get()
     for (const auto &row : m_table) {
         result += boost::join(row, Table::SPLIT_CHAR) + "\n";
     }
-    result += "\n";
+    result = result.substr(0, result.size() - 1);
     return result;
 }
 
