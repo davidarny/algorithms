@@ -4,7 +4,7 @@
 #define ALGORITHMS_INPUTTABLE_H
 
 #include "EHeader.h"
-#include "Converter.h"
+#include "TableConverter.h"
 
 class InputTable
 {

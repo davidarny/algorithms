@@ -1,3 +1,6 @@
 Second name Department Group Average score
 Arutiunian FIiVT PS-23 100
 Scheglova FIiVT PS-23 50
+Pupkin BIS PS-11 75
+Andreeva BIS PS-12 125
+Alexeev IVT PS-45 250

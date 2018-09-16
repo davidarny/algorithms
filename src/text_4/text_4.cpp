@@ -18,6 +18,6 @@ TString text_4(TString path)
         line.clear();
     }
     InputTable inputTable{lines};
-    Converter converter{};
-    return converter.convert(inputTable.getTable());
+    TableConverter tableConverter{};
+    return tableConverter.convert(inputTable.getTable());
 }

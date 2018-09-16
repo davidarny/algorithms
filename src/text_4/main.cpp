@@ -16,11 +16,13 @@
 Арутюнян Давид, ПС-23
 */
 
-#include <iostream>
 #include "text_4.h"
+#include <iostream>
+#include <windows.h>
 
 int main(int argc, char *argv[])
 {
+    SetConsoleOutputCP(CP_UTF8);
     TString path = argv[1];
     TString text;
     try {

@@ -2,7 +2,7 @@
 #include <boost/range/adaptors.hpp>
 
 #include "Table.h"
-#include "Converter.h"
+#include "TableConverter.h"
 
 void Table::parse(TLines lines)
 {

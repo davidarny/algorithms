@@ -3,10 +3,6 @@
 
 #include "text_4/text_4.h"
 
-const TString SAMPLE_TEXT = "Second name Department Group Average score\n"
-                            "Arutiunian FIiVT PS-23 100\n"
-                            "Scheglova FIiVT PS-23 50";
-
-void create_file(TString path);
+void create_file(TString path, TString sample);
 
 #endif //ALGORITHMS_UTILS_H

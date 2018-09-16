@@ -1,18 +1,18 @@
 #ifndef ALGORITHMS_OUTPUTTABLE_H
 #define ALGORITHMS_OUTPUTTABLE_H
 
-#include <tuple>
 #include <map>
+#include <tuple>
 
 #include "EHeader.h"
 #include "Table.h"
 
 using TNumber = unsigned long long;
+using TSignedNumber = long long;
 using TScores = std::vector<TNumber>;
 using TGroups = std::map<TString, std::tuple<TString, TString, TScores>>;
 
-class Converter
-{
+class TableConverter {
 private:
     enum EConverterOrder {
         DEPARTMENT = 0,
@@ -34,11 +34,11 @@ private:
 
     TString get();
 
-    template<typename T, typename I>
+    template <typename T, typename I>
     TNumber index_of(T vector, I item);
 
 public:
-    TString convert(const TTable &table);
+    TString convert(const TTable& table);
 };
 
 #endif //ALGORITHMS_OUTPUTTABLE_H
