@@ -18,7 +18,7 @@
     },
     "scripts": {
         "clean": "rimraf bin cmake-build",
-        "init": "mkdir cmake-build && cd cmake-build && cmake -DCMAKE_SH=\"CMAKE_SH-NOTFOUND\" -DCMAKE_BUILD_TYPE=Debug -G \"CodeBlocks - MinGW Makefiles\" ..",
+        "init": "mkdir cmake-build && cd cmake-build && cross-env CI=true cmake -DCMAKE_SH=\"CMAKE_SH-NOTFOUND\" -DCMAKE_BUILD_TYPE=Debug -G \"CodeBlocks - MinGW Makefiles\" ..",
         "build": "cd cmake-build && cmake --build .",
         "build:test": "cd cmake-build && cmake --build . --target Test",
         "test": "npm run build:test && cd bin && Test"
@@ -36,6 +36,7 @@
         }
     },
     "dependencies": {
+        "cross-env": "^5.2.0",
         "rimraf": "^2.6.2"
     }
 }
