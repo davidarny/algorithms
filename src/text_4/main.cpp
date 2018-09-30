@@ -17,13 +17,21 @@
 gcc 7.2.0, CLion
 */
 
-#include "text_4.h"
 #include <iostream>
+
+#ifdef _WIN32
+
 #include <windows.h>
+
+#endif
+
+#include "text_4.h"
 
 int main(int argc, char *argv[])
 {
+#ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
+#endif
     TString path = argv[1];
     TString text;
     try {

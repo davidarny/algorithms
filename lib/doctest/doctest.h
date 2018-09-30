@@ -3864,7 +3864,7 @@ namespace detail {
     ContextBuilder::Node::Node()  = default;
     ContextBuilder::Node::~Node() = default;
 
-    // steal the contents of the other - acting as a move constructor...
+    // steal the elements of the other - acting as a move constructor...
     ContextBuilder::ContextBuilder(ContextBuilder& other)
             : numCaptures(other.numCaptures)
             , head(other.head)
