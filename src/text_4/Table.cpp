@@ -17,7 +17,7 @@ void Table::parse(TLines lines)
             continue;
         }
         if (row.size() != header.size()) {
-            throw std::length_error("Error while parsing data at line " + std::to_string(index + 1));
+            throw std::range_error("Error while parsing data at line " + std::to_string(index + 1));
         }
         table.push_back(std::move(row));
         index++;

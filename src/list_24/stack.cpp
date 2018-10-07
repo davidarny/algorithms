@@ -1,5 +1,5 @@
-#include <exception>
 #include <malloc.h>
+#include <stdexcept>
 
 #include "stack.h"
 
@@ -29,7 +29,7 @@ void StackPush(Stack* p_stack, TStackElement element)
         p_stack->elements,
         sizeof(TStackElement) * p_stack->top));
     if (p_stack->elements == nullptr) {
-        throw "Cannot allocate memory";
+        throw std::runtime_error("Cannot allocate memory");
     }
     p_stack->elements[p_stack->top] = element;
 }
@@ -37,7 +37,7 @@ void StackPush(Stack* p_stack, TStackElement element)
 TStackElement StackPop(Stack* p_stack)
 {
     if (StackIsEmpty(p_stack)) {
-        throw "Cannot push from empty stack";
+        throw std::logic_error("Cannot push from empty stack");
     }
     auto element = p_stack->elements[p_stack->top--];
     p_stack->elements = static_cast<TStackElement*>(realloc(

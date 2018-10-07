@@ -32,7 +32,7 @@
     "husky": {
         "hooks": {
             "pre-commit": "git-clang-format && git add .",
-            "pre-push": "npm test"
+            "pre-push": "npm run clean && npm run init && npm test"
         }
     },
     "dependencies": {
