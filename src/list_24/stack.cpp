@@ -3,17 +3,18 @@
 
 #include "stack.h"
 
-void StackInit(Stack* p_stack)
+Stack* CreateStack()
 {
+    auto* p_stack = new Stack();
     p_stack->elements = nullptr;
     p_stack->top = -1;
+    return p_stack;
 }
 
 void StackDestroy(Stack* p_stack)
 {
-    free(p_stack->elements);
-    p_stack->elements = nullptr;
-    p_stack->top = -1;
+    delete[] p_stack->elements;
+    delete p_stack;
 }
 
 int StackIsEmpty(Stack* p_stack)

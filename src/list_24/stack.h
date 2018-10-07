@@ -9,7 +9,7 @@ typedef struct
     int top;
 } Stack;
 
-void StackInit(Stack* p_stack);
+Stack* CreateStack();
 
 void StackDestroy(Stack* p_stack);
 
