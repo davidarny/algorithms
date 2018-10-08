@@ -16,9 +16,24 @@ gcc 7.2.0, CLion
 
 #endif
 
+#include <iostream>
+#include <string>
+
+#include "calculator.h"
+
 int main(int argc, char* argv[])
 {
 #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
 #endif
+    std::string line;
+    std::getline(std::cin, line);
+    line = Calculator::trim(line);
+    try {
+        auto postfix = Calculator::toPostfix(line.data());
+        auto result = Calculator::calculate(postfix);
+        std::cout << result << std::endl;
+    } catch (std::exception& ex) {
+        std::cerr << ex.what() << std::endl;
+    }
 }

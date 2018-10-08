@@ -25,9 +25,13 @@ int StackIsEmpty(Stack* p_stack)
 void StackPush(Stack* p_stack, TStackElement element)
 {
     p_stack->top++;
-    p_stack->elements = static_cast<TStackElement*>(realloc(
-        p_stack->elements,
-        sizeof(TStackElement) * p_stack->top));
+    if (p_stack->elements == nullptr) {
+        p_stack->elements = static_cast<TStackElement*>(malloc(sizeof(TStackElement) * (p_stack->top + 1)));
+    } else {
+        p_stack->elements = static_cast<TStackElement*>(realloc(
+            p_stack->elements,
+            sizeof(TStackElement) * (p_stack->top + 1)));
+    }
     if (p_stack->elements == nullptr) {
         throw std::runtime_error("Cannot allocate memory");
     }
@@ -37,11 +41,15 @@ void StackPush(Stack* p_stack, TStackElement element)
 TStackElement StackPop(Stack* p_stack)
 {
     if (StackIsEmpty(p_stack)) {
-        throw std::logic_error("Cannot push from empty stack");
+        throw std::logic_error("Cannot pop from empty stack");
     }
     auto element = p_stack->elements[p_stack->top--];
-    p_stack->elements = static_cast<TStackElement*>(realloc(
-        p_stack->elements,
-        sizeof(TStackElement) * (p_stack->top + 1)));
+    if (p_stack->top + 1 <= 0) {
+        p_stack->elements = nullptr;
+    } else {
+        p_stack->elements = static_cast<TStackElement*>(realloc(
+            p_stack->elements,
+            sizeof(TStackElement) * (p_stack->top + 1)));
+    }
     return element;
 }

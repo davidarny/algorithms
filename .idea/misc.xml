@@ -9,6 +9,7 @@
       <file path="$PROJECT_DIR$/bin" />
       <file path="$PROJECT_DIR$/cmake-build" />
       <file path="$PROJECT_DIR$/cmake-output" />
+      <file path="$PROJECT_DIR$/lib" />
       <file path="$PROJECT_DIR$/node_modules" />
     </excludeRoots>
   </component>

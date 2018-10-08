@@ -2,7 +2,7 @@
 
 using namespace Operator;
 
-void Operator::init(TOperator array[OPERATORS_SIZE])
+void Operator::create(TOperator array[OPERATORS_SIZE])
 {
     TOperator addition;
     addition.value = operators.at(ADDITION);
@@ -51,7 +51,7 @@ TOperator Operator::getByChar(char op)
 {
     TOperator result;
     TOperator array[OPERATORS_SIZE];
-    Operator::init(array);
+    create(array);
 
     switch (op) {
     case '+':

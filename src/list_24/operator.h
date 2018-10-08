@@ -41,7 +41,7 @@ typedef struct
     unsigned short priority;
 } TOperator;
 
-void init(TOperator* array);
+void create(TOperator* array);
 
 TOperator getByChar(char op);
 }
