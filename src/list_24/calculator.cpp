@@ -29,16 +29,18 @@ long long Calculator::calculate(const char* p_expression)
 
     strcat(p_buffer, p_expression);
 
-    p_ch = strtok(p_buffer, "*-+/() ");
+    p_ch = strtok(p_buffer, "*-+/()~ ");
     while (p_ch != nullptr) {
         p_numbers[j++] = strtoll(p_ch, nullptr, 10);
-        p_ch = strtok(nullptr, "*-+/() ");
+        p_ch = strtok(nullptr, "*-+/()~ ");
     }
     j = 0;
 
-    while (p_expression[i] != '\0') {
+    while (p_expression[i] != EOLN) {
         if (check(p_expression[i])) {
-            if (p_expression[i] == operators.at(ADDITION)) {
+            if (p_expression[i] == operators.at(UNARY_MINUS)) {
+                StackPush(p_stack, -StackPop(p_stack));
+            } else if (p_expression[i] == operators.at(ADDITION)) {
                 StackPush(p_stack, StackPop(p_stack) + StackPop(p_stack));
             } else if (p_expression[i] == operators.at(MULTIPLICATION)) {
                 StackPush(p_stack, StackPop(p_stack) * StackPop(p_stack));
@@ -55,7 +57,7 @@ long long Calculator::calculate(const char* p_expression)
                 buffer = StackPop(p_stack);
                 StackPush(p_stack, StackPop(p_stack) - buffer);
             }
-        } else if (p_expression[i] != ' ') {
+        } else if (p_expression[i] != SPACE) {
             StackPush(p_stack, p_numbers[j]);
             i += floor(log10(llabs(p_numbers[j])));
             j++;
@@ -76,7 +78,8 @@ bool Calculator::check(char op)
     return op == operators.at(ADDITION)
         || op == operators.at(SUBTRACTION)
         || op == operators.at(MULTIPLICATION)
-        || op == operators.at(DIVISION);
+        || op == operators.at(DIVISION)
+        || op == operators.at(UNARY_MINUS);
 }
 
 char* Calculator::toPostfix(char* p_expression)
@@ -88,57 +91,65 @@ char* Calculator::toPostfix(char* p_expression)
     char temp;
     unsigned int k = 0;
     unsigned int i = 0;
-    Operator::TOperator lastOperator;
+    Operator::TOperator prevOperator;
     Operator::TOperator currentOperator;
     Stack* p_stack = CreateStack();
     Operator::TOperator operators[OPERATORS_SIZE];
     create(operators);
 
-    while (p_expression[k] != '\0') {
-        if (check(p_expression[k]) || p_expression[k] == operators[LEFT_BRACKET].value) {
-            if (p_stack->top != -1) {
+    while (p_expression[k] != EOLN) {
+        const bool isMinusSign = p_expression[k] == operators[SUBTRACTION].value;
+        const bool isPrevRightBracket = k > 0 && p_expression[k - 1] != operators[RIGHT_BRACKET].value;
+        const bool isLeftBracket = p_expression[k] == operators[LEFT_BRACKET].value;
+        const bool isValidUnaryMinus = k == 0 || isPrevRightBracket;
+        if (isMinusSign && isValidUnaryMinus) {
+            StackPush(p_stack, operators[UNARY_MINUS].value);
+        } else if (check(p_expression[k]) || isLeftBracket) {
+            if (!StackIsEmpty(p_stack)) {
                 temp = static_cast<char>(StackPop(p_stack));
-                lastOperator = getByChar(temp);
+                prevOperator = getByChar(temp);
                 currentOperator = getByChar(p_expression[k]);
-                if (lastOperator.priority >= currentOperator.priority
-                    && currentOperator.value != operators[LEFT_BRACKET].value) {
-                    while (lastOperator.priority >= currentOperator.priority) {
-                        p_buffer[i++] = ' ';
-                        p_buffer[i++] = lastOperator.value;
-                        p_buffer[i++] = ' ';
-                        if (p_stack->top != -1) {
+                bool isPrevPriorityHigher = prevOperator.priority >= currentOperator.priority;
+                const bool isCurrentOpLeftBracket = currentOperator.value == operators[LEFT_BRACKET].value;
+                if (isPrevPriorityHigher && !isCurrentOpLeftBracket) {
+                    while (isPrevPriorityHigher) {
+                        p_buffer[i++] = SPACE;
+                        p_buffer[i++] = prevOperator.value;
+                        p_buffer[i++] = SPACE;
+                        if (!StackIsEmpty(p_stack)) {
                             temp = static_cast<char>(StackPop(p_stack));
-                            lastOperator = getByChar(temp);
+                            prevOperator = getByChar(temp);
                             if (temp == operators[LEFT_BRACKET].value)
                                 StackPush(p_stack, temp);
                         } else {
                             break;
                         }
+                        isPrevPriorityHigher = prevOperator.priority >= currentOperator.priority;
                     }
                 } else {
                     StackPush(p_stack, temp);
                 }
             }
             StackPush(p_stack, static_cast<long long>(p_expression[k]));
-            p_buffer[i++] = ' ';
+            p_buffer[i++] = SPACE;
         } else if (p_expression[k] == operators[RIGHT_BRACKET].value) {
             temp = static_cast<char>(StackPop(p_stack));
             while (temp != operators[LEFT_BRACKET].value) {
-                p_buffer[i++] = ' ';
+                p_buffer[i++] = SPACE;
                 p_buffer[i++] = temp;
-                p_buffer[i++] = ' ';
+                p_buffer[i++] = SPACE;
                 temp = static_cast<char>(StackPop(p_stack));
             }
-        } else if (p_expression[k] != ' ') {
+        } else if (p_expression[k] != SPACE) {
             p_buffer[i++] = p_expression[k];
         }
         k++;
     }
 
-    while (p_stack->top != -1) {
-        p_buffer[i++] = ' ';
+    while (!StackIsEmpty(p_stack)) {
+        p_buffer[i++] = SPACE;
         p_buffer[i++] = static_cast<char>(StackPop(p_stack));
-        p_buffer[i++] = ' ';
+        p_buffer[i++] = SPACE;
     }
 
     StackDestroy(p_stack);
@@ -148,6 +159,6 @@ char* Calculator::toPostfix(char* p_expression)
 std::string Calculator::trim(const std::string& str)
 {
     std::string buffer = str;
-    buffer.erase(std::remove(buffer.begin(), buffer.end(), ' '), buffer.end());
+    buffer.erase(std::remove(buffer.begin(), buffer.end(), SPACE), buffer.end());
     return buffer;
 }

@@ -40,6 +40,12 @@ void Operator::create(TOperator array[OPERATORS_SIZE])
     right_bracket.priority = priorities.at(RIGHT_BRACKET);
     array[RIGHT_BRACKET] = right_bracket;
 
+    TOperator unary_minus;
+    unary_minus.value = operators.at(UNARY_MINUS);
+    unary_minus.id = UNARY_MINUS;
+    unary_minus.priority = priorities.at(UNARY_MINUS);
+    array[UNARY_MINUS] = unary_minus;
+
     TOperator empty;
     empty.value = operators.at(EMPTY);
     empty.id = EMPTY;
@@ -71,6 +77,9 @@ TOperator Operator::getByChar(char op)
         break;
     case ')':
         result = array[RIGHT_BRACKET];
+        break;
+    case '~':
+        result = array[UNARY_MINUS];
         break;
     default:
         result = array[EMPTY];

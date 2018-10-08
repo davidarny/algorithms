@@ -4,6 +4,8 @@
 #include <string>
 
 namespace Calculator {
+static constexpr char EOLN = '\0';
+static constexpr char SPACE = ' ';
 static constexpr unsigned NUM_OF_STRINGS = 256;
 static constexpr unsigned STRING_LENGTH = 256;
 

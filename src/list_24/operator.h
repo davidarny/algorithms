@@ -7,6 +7,7 @@ namespace Operator {
 enum EOperators {
     ADDITION = 0,
     SUBTRACTION,
+    UNARY_MINUS,
     DIVISION,
     MULTIPLICATION,
     LEFT_BRACKET,
@@ -14,10 +15,11 @@ enum EOperators {
     EMPTY
 };
 
-constexpr unsigned OPERATORS_SIZE = 7;
+constexpr unsigned OPERATORS_SIZE = 8;
 const std::map<EOperators, char> operators{
     { ADDITION, '+' },
     { SUBTRACTION, '-' },
+    { UNARY_MINUS, '~' },
     { DIVISION, '/' },
     { MULTIPLICATION, '*' },
     { LEFT_BRACKET, '(' },
@@ -25,13 +27,14 @@ const std::map<EOperators, char> operators{
     { EMPTY, '\0' },
 };
 const std::map<EOperators, unsigned short> priorities{
-    { ADDITION, 0x01 },
-    { SUBTRACTION, 0x01 },
-    { DIVISION, 0x10 },
-    { MULTIPLICATION, 0x10 },
-    { LEFT_BRACKET, 0x00 },
-    { RIGHT_BRACKET, 0x00 },
-    { EMPTY, 0x11 },
+    { ADDITION, 1 },
+    { SUBTRACTION, 1 },
+    { DIVISION, 2 },
+    { MULTIPLICATION, 2 },
+    { LEFT_BRACKET, 0 },
+    { RIGHT_BRACKET, 0 },
+    { UNARY_MINUS, 3 },
+    { EMPTY, 4 },
 };
 
 typedef struct

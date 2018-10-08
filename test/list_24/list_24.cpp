@@ -77,6 +77,11 @@ TEST_CASE("get operator by char")
     CHECK(op.value == ch);
     CHECK(op.id == Operator::RIGHT_BRACKET);
     CHECK(op.priority == Operator::priorities.at(Operator::RIGHT_BRACKET));
+    ch = '~';
+    op = Operator::getByChar(ch);
+    CHECK(op.value == ch);
+    CHECK(op.id == Operator::UNARY_MINUS);
+    CHECK(op.priority == Operator::priorities.at(Operator::UNARY_MINUS));
     ch = '\0';
     op = Operator::getByChar(ch);
     CHECK(op.value == ch);
