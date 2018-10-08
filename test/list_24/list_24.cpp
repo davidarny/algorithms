@@ -1,4 +1,5 @@
 #include "doctest.h"
+#include "list_24/operator.h"
 #include "list_24/stack.h"
 
 TEST_CASE("stack is created")
@@ -42,4 +43,43 @@ TEST_CASE("stack pop works")
     CHECK(StackIsEmpty(p_stack));
     CHECK_THROWS(StackPop(p_stack));
     StackDestroy(p_stack);
+}
+
+TEST_CASE("get operator by char")
+{
+    char ch = '+';
+    auto op = Operator::getByChar(ch);
+    CHECK(op.value == ch);
+    CHECK(op.id == Operator::ADDITION);
+    CHECK(op.priority == Operator::priorities.at(Operator::ADDITION));
+    ch = '-';
+    op = Operator::getByChar(ch);
+    CHECK(op.value == ch);
+    CHECK(op.id == Operator::SUBTRACTION);
+    CHECK(op.priority == Operator::priorities.at(Operator::SUBTRACTION));
+    ch = '/';
+    op = Operator::getByChar(ch);
+    CHECK(op.value == ch);
+    CHECK(op.id == Operator::DIVISION);
+    CHECK(op.priority == Operator::priorities.at(Operator::DIVISION));
+    ch = '*';
+    op = Operator::getByChar(ch);
+    CHECK(op.value == ch);
+    CHECK(op.id == Operator::MULTIPLICATION);
+    CHECK(op.priority == Operator::priorities.at(Operator::MULTIPLICATION));
+    ch = '(';
+    op = Operator::getByChar(ch);
+    CHECK(op.value == ch);
+    CHECK(op.id == Operator::LEFT_BRACKET);
+    CHECK(op.priority == Operator::priorities.at(Operator::LEFT_BRACKET));
+    ch = ')';
+    op = Operator::getByChar(ch);
+    CHECK(op.value == ch);
+    CHECK(op.id == Operator::RIGHT_BRACKET);
+    CHECK(op.priority == Operator::priorities.at(Operator::RIGHT_BRACKET));
+    ch = '\0';
+    op = Operator::getByChar(ch);
+    CHECK(op.value == ch);
+    CHECK(op.id == Operator::EMPTY);
+    CHECK(op.priority == Operator::priorities.at(Operator::EMPTY));
 }
