@@ -51,6 +51,12 @@ void Operator::create(TOperator array[OPERATORS_SIZE])
     empty.id = EMPTY;
     empty.priority = priorities.at(EMPTY);
     array[EMPTY] = empty;
+
+    TOperator power;
+    power.value = '^';
+    power.id = POWER;
+    power.priority = priorities.at(POWER);
+    array[POWER] = power;
 }
 
 TOperator Operator::getByChar(char op)
@@ -80,6 +86,9 @@ TOperator Operator::getByChar(char op)
         break;
     case '~':
         result = array[UNARY_MINUS];
+        break;
+    case '^':
+        result = array[POWER];
         break;
     default:
         result = array[EMPTY];

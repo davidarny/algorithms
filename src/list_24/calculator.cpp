@@ -29,16 +29,18 @@ long long Calculator::calculate(const char* p_expression)
 
     strcat(p_buffer, p_expression);
 
-    p_ch = strtok(p_buffer, "*-+/()~ ");
+    p_ch = strtok(p_buffer, "*-+/()~^ ");
     while (p_ch != nullptr) {
         p_numbers[j++] = strtoll(p_ch, nullptr, 10);
-        p_ch = strtok(nullptr, "*-+/()~ ");
+        p_ch = strtok(nullptr, "*-+/()^~ ");
     }
     j = 0;
 
     while (p_expression[i] != EOLN) {
         if (check(p_expression[i])) {
-            if (p_expression[i] == operators.at(UNARY_MINUS)) {
+            if (p_expression[i] == operators.at(POWER)) {
+                StackPush(p_stack, static_cast<int>(std::pow(StackPop(p_stack), StackPop(p_stack))));
+            } else if (p_expression[i] == operators.at(UNARY_MINUS)) {
                 StackPush(p_stack, -StackPop(p_stack));
             } else if (p_expression[i] == operators.at(ADDITION)) {
                 StackPush(p_stack, StackPop(p_stack) + StackPop(p_stack));
@@ -79,7 +81,8 @@ bool Calculator::check(char op)
         || op == operators.at(SUBTRACTION)
         || op == operators.at(MULTIPLICATION)
         || op == operators.at(DIVISION)
-        || op == operators.at(UNARY_MINUS);
+        || op == operators.at(UNARY_MINUS)
+        || op == operators.at(POWER);
 }
 
 char* Calculator::toPostfix(char* p_expression)

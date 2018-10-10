@@ -12,10 +12,11 @@ enum EOperators {
     MULTIPLICATION,
     LEFT_BRACKET,
     RIGHT_BRACKET,
+    POWER,
     EMPTY
 };
 
-constexpr unsigned OPERATORS_SIZE = 8;
+constexpr unsigned OPERATORS_SIZE = 9;
 const std::map<EOperators, char> operators{
     { ADDITION, '+' },
     { SUBTRACTION, '-' },
@@ -24,17 +25,19 @@ const std::map<EOperators, char> operators{
     { MULTIPLICATION, '*' },
     { LEFT_BRACKET, '(' },
     { RIGHT_BRACKET, ')' },
+    { POWER, '^' },
     { EMPTY, '\0' },
 };
 const std::map<EOperators, unsigned short> priorities{
+    { LEFT_BRACKET, 0 },
+    { RIGHT_BRACKET, 0 },
     { ADDITION, 1 },
     { SUBTRACTION, 1 },
     { DIVISION, 2 },
     { MULTIPLICATION, 2 },
-    { LEFT_BRACKET, 0 },
-    { RIGHT_BRACKET, 0 },
-    { UNARY_MINUS, 3 },
-    { EMPTY, 4 },
+    { POWER, 3 },
+    { UNARY_MINUS, 4 },
+    { EMPTY, 5 },
 };
 
 typedef struct
