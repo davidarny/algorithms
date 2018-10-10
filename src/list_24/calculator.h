@@ -16,6 +16,8 @@ char* toPostfix(char* p_expression);
 bool check(char op);
 
 std::string trim(const std::string& str);
+
+void isValidChar(char ch);
 }
 
 #endif //ALGORITHMS_CALCULATOR_H
