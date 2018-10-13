@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
+#include <iterator>
 #include <stdexcept>
 #include <string.h>
 
@@ -29,10 +30,10 @@ long long Calculator::calculate(const char* p_expression)
 
     strcat(p_buffer, p_expression);
 
-    p_ch = strtok(p_buffer, "*-+/()~^ ");
+    p_ch = strtok(p_buffer, Operator::join().data());
     while (p_ch != nullptr) {
         p_numbers[j++] = strtoll(p_ch, nullptr, 10);
-        p_ch = strtok(nullptr, "*-+/()^~ ");
+        p_ch = strtok(nullptr, Operator::join().data());
     }
     j = 0;
 
@@ -122,17 +123,18 @@ char* Calculator::parse(char* p_expression)
                         p_buffer[i++] = SPACE;
                         p_buffer[i++] = prevOperator.value;
                         p_buffer[i++] = SPACE;
-                        if (!StackIsEmpty(p_stack)) {
+                        auto isCurrentLeftBracket = currentChar == operators[LEFT_BRACKET].value;
+                        if (!StackIsEmpty(p_stack) && !isCurrentLeftBracket) {
                             currentChar = static_cast<char>(StackPop(p_stack));
                             prevOperator = getByChar(currentChar);
-                            auto isCurrentLeftBracket = currentChar == operators[LEFT_BRACKET].value;
-                            if (isCurrentLeftBracket) {
-                                StackPush(p_stack, currentChar);
-                            }
+                            //                            StackPush(p_stack, currentChar);
                         } else {
                             break;
                         }
                         isPrevPriorityHigher = prevOperator.priority >= currentOperator.priority;
+                        if (!isPrevPriorityHigher) {
+                            StackPush(p_stack, prevOperator.value);
+                        }
                         if (currentOperator.associativity == Operator::RIGHT) {
                             isPrevPriorityHigher = prevOperator.priority > currentOperator.priority;
                         }
@@ -161,10 +163,10 @@ char* Calculator::parse(char* p_expression)
     while (!StackIsEmpty(p_stack)) {
         p_buffer[i++] = SPACE;
         p_buffer[i++] = static_cast<char>(StackPop(p_stack));
-        p_buffer[i++] = SPACE;
     }
 
     StackDestroy(p_stack);
+    unique_spaces(p_buffer);
     return p_buffer;
 }
 
@@ -181,4 +183,13 @@ void Calculator::isValidChar(char ch)
     if (!isValidChar) {
         throw std::logic_error("Error: " + std::string({ ch }) + " in not a digit");
     }
+}
+
+void Calculator::unique_spaces(char* str)
+{
+    std::string input(str);
+    std::string output;
+    std::unique_copy(input.begin(), input.end(), std::back_insert_iterator<std::string>(output),
+        [](char a, char b) { return std::isspace(a) && std::isspace(b); });
+    strcpy(str, output.data());
 }

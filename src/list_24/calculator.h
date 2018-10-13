@@ -17,6 +17,8 @@ bool check(char op);
 
 std::string trim(const std::string& str);
 
+void unique_spaces(char* str);
+
 void isValidChar(char ch);
 }
 

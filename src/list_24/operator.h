@@ -66,6 +66,8 @@ typedef struct
 
 void create(TOperator* array);
 
+std::string join();
+
 TOperator getByChar(char op);
 }
 

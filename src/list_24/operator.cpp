@@ -106,3 +106,16 @@ TOperator Operator::getByChar(char op)
 
     return result;
 }
+
+std::string Operator::join()
+{
+    return std::string({ operators.at(ADDITION) })
+        + std::string({ operators.at(SUBTRACTION) })
+        + std::string({ operators.at(UNARY_MINUS) })
+        + std::string({ operators.at(DIVISION) })
+        + std::string({ operators.at(MULTIPLICATION) })
+        + std::string({ operators.at(LEFT_BRACKET) })
+        + std::string({ operators.at(RIGHT_BRACKET) })
+        + std::string({ operators.at(POWER) })
+        + std::string({ ' ' });
+}
