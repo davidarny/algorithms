@@ -16,6 +16,11 @@ enum EOperators {
     EMPTY
 };
 
+enum EAssociativity {
+    LEFT = 0,
+    RIGHT
+};
+
 constexpr unsigned OPERATORS_SIZE = 9;
 const std::map<EOperators, char> operators{
     { ADDITION, '+' },
@@ -39,10 +44,22 @@ const std::map<EOperators, unsigned short> priorities{
     { UNARY_MINUS, 4 },
     { EMPTY, 5 },
 };
+const std::map<EOperators, EAssociativity> associativities{
+    { LEFT_BRACKET, LEFT },
+    { RIGHT_BRACKET, LEFT },
+    { ADDITION, LEFT },
+    { SUBTRACTION, LEFT },
+    { DIVISION, LEFT },
+    { MULTIPLICATION, LEFT },
+    { UNARY_MINUS, LEFT },
+    { EMPTY, LEFT },
+    { POWER, RIGHT },
+};
 
 typedef struct
 {
     char value;
+    enum EAssociativity associativity;
     enum EOperators id;
     unsigned short priority;
 } TOperator;

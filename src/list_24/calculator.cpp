@@ -85,7 +85,7 @@ bool Calculator::check(char op)
         || op == operators.at(POWER);
 }
 
-char* Calculator::toPostfix(char* p_expression)
+char* Calculator::parse(char* p_expression)
 {
     char* p_buffer = static_cast<char*>(calloc(STRING_LENGTH, sizeof(char)));
     if (p_buffer == nullptr) {
@@ -113,6 +113,9 @@ char* Calculator::toPostfix(char* p_expression)
                 prevOperator = getByChar(currentChar);
                 currentOperator = getByChar(p_expression[k]);
                 bool isPrevPriorityHigher = prevOperator.priority >= currentOperator.priority;
+                if (currentOperator.associativity == Operator::RIGHT) {
+                    isPrevPriorityHigher = prevOperator.priority > currentOperator.priority;
+                }
                 const bool isCurrentOpLeftBracket = currentOperator.value == operators[LEFT_BRACKET].value;
                 if (isPrevPriorityHigher && !isCurrentOpLeftBracket) {
                     while (isPrevPriorityHigher) {
@@ -130,6 +133,9 @@ char* Calculator::toPostfix(char* p_expression)
                             break;
                         }
                         isPrevPriorityHigher = prevOperator.priority >= currentOperator.priority;
+                        if (currentOperator.associativity == Operator::RIGHT) {
+                            isPrevPriorityHigher = prevOperator.priority > currentOperator.priority;
+                        }
                     }
                 } else {
                     StackPush(p_stack, currentChar);

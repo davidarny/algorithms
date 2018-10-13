@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
     std::getline(std::cin, line);
     line = Calculator::trim(line);
     try {
-        auto postfix = Calculator::toPostfix(line.data());
+        auto postfix = Calculator::parse(line.data());
         auto result = Calculator::calculate(postfix);
         std::cout << result << std::endl;
     } catch (std::exception& ex) {

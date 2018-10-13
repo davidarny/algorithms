@@ -11,7 +11,7 @@ static constexpr unsigned STRING_LENGTH = 256;
 
 long long calculate(const char* p_expression);
 
-char* toPostfix(char* p_expression);
+char* parse(char* p_expression);
 
 bool check(char op);
 
