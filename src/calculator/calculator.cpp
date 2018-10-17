@@ -127,7 +127,6 @@ char* Calculator::parse(char* p_expression)
                         if (!StackIsEmpty(p_stack) && !isCurrentLeftBracket) {
                             currentChar = static_cast<char>(StackPop(p_stack));
                             prevOperator = getByChar(currentChar);
-                            //                            StackPush(p_stack, currentChar);
                         } else {
                             break;
                         }

@@ -1,11 +1,11 @@
 #include <fstream>
 #include <vector>
 
-#include "text_4.h"
-#include "Table.h"
 #include "InputTable.h"
+#include "Table.h"
+#include "table-converter.h"
 
-TString text_4(TString path)
+TString table_converter(TString path)
 {
     TRow lines;
     TString line;
@@ -17,7 +17,7 @@ TString text_4(TString path)
         lines.push_back(line);
         line.clear();
     }
-    InputTable inputTable{lines};
+    InputTable inputTable{ lines };
     TableConverter tableConverter{};
     return tableConverter.convert(inputTable.getTable());
 }

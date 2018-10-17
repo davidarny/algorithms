@@ -14,6 +14,6 @@ if (DEFINED ENV{CI})
         ${Boost_LIBRARIES}
     )
 else ()
-    add_subdirectory(text_4)
-    add_subdirectory(list_24)
+    add_subdirectory(table-converter)
+    add_subdirectory(calculator)
 endif ()

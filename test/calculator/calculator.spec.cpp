@@ -1,9 +1,9 @@
 #include <string.h>
 
+#include "calculator/calculator.h"
+#include "calculator/operator.h"
+#include "calculator/stack.h"
 #include "doctest.h"
-#include "list_24/calculator.h"
-#include "list_24/operator.h"
-#include "list_24/stack.h"
 
 TEST_CASE("stack is created")
 {

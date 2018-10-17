@@ -6,8 +6,7 @@
 #include "EHeader.h"
 #include "TableConverter.h"
 
-class InputTable
-{
+class InputTable {
 private:
     THeader header{
         EHeader::LAST_NAME,
@@ -18,10 +17,9 @@ private:
     Table table;
 
 public:
-    InputTable(std::vector<TString> &rows);
+    InputTable(std::vector<TString>& rows);
 
-    const TTable &getTable() const;
+    const TTable& getTable() const;
 };
-
 
 #endif //ALGORITHMS_INPUTTABLE_H

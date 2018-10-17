@@ -25,9 +25,9 @@ gcc 7.2.0, CLion
 
 #endif
 
-#include "text_4.h"
+#include "table-converter.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
@@ -35,8 +35,8 @@ int main(int argc, char *argv[])
     TString path = argv[1];
     TString text;
     try {
-        text = text_4(path);
-    } catch (std::exception &e) {
+        text = table_converter(path);
+    } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
         return -1;
     }

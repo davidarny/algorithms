@@ -1,13 +1,13 @@
-file(GLOB SRC ${algorithms_SOURCE_DIR}/src/text_4/*.cpp)
+file(GLOB SRC ${algorithms_SOURCE_DIR}/src/calculator/*.cpp)
 file(GLOB UTILS_SRC ${algorithms_SOURCE_DIR}/test/utils/*.cpp)
 
 list(FILTER SRC EXCLUDE REGEX ".*main.cpp$")
 
 include_directories(${algorithms_SOURCE_DIR}/src ${algorithms_SOURCE_DIR}/lib/doctest)
 
-add_executable(test_text_4 main.cpp text_4.cpp ${SRC} ${UTILS_SRC})
+add_executable(calculator_test main.cpp calculator.spec.cpp ${SRC} ${UTILS_SRC})
 
 target_link_libraries(
-    test_text_4
+    calculator_test
     ${Boost_LIBRARIES}
 )

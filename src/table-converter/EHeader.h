@@ -1,8 +1,7 @@
 #ifndef ALGORITHMS_EINPUTHEADER_H
 #define ALGORITHMS_EINPUTHEADER_H
 
-class EHeader
-{
+class EHeader {
 public:
     static constexpr auto LAST_NAME = "Last name";
     static constexpr auto DEPARTMENT = "Department";

@@ -6,6 +6,6 @@
 
 using TString = std::string;
 
-TString text_4(TString path);
+TString table_converter(TString path);
 
 #endif //ALGORITHMS_TEXT_4_H

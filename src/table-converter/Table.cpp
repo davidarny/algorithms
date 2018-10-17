@@ -7,7 +7,7 @@
 void Table::parse(TLines lines)
 {
     TNumber index = 0;
-    for (const auto &line : lines) {
+    for (const auto& line : lines) {
         TRow row;
         boost::split(row, line, boost::is_any_of(Table::SPLIT_CHAR));
         const bool isRowValid = std::any_of(row.begin(), row.end(), [&](auto value) {
@@ -26,16 +26,14 @@ void Table::parse(TLines lines)
 
 Table::Table(
     THeader header,
-    TLines lines
-)
+    TLines lines)
     : header(std::move(header))
 {
     table = {};
     parse(std::move(lines));
 }
 
-const TTable &Table::getTable() const
+const TTable& Table::getTable() const
 {
     return table;
 }
-
