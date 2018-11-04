@@ -14,7 +14,7 @@ static const TString PATH = "table-converter.mock.txt";
 
 TEST_CASE("table-converter creates file")
 {
-    create_file(PATH, SAMPLE_TEXT);
+    createFile(PATH, SAMPLE_TEXT);
     std::ifstream input;
     input.open(PATH);
     CHECK(input);
@@ -23,8 +23,8 @@ TEST_CASE("table-converter creates file")
 
 TEST_CASE("table-converter reads file")
 {
-    create_file(PATH, SAMPLE_TEXT);
-    TString result = table_converter(PATH);
+    createFile(PATH, SAMPLE_TEXT);
+    TString result = tableConverter(PATH);
     CHECK(result.size() != 0);
     std::remove(PATH.data());
 }

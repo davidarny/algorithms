@@ -11,8 +11,6 @@
       <file path="$PROJECT_DIR$/cmake-output" />
       <file path="$PROJECT_DIR$/lib" />
       <file path="$PROJECT_DIR$/node_modules" />
-      <file path="$PROJECT_DIR$/src/expression-tree" />
-      <file path="$PROJECT_DIR$/src/table-converter" />
     </excludeRoots>
   </component>
 </project>

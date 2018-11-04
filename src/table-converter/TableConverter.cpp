@@ -7,14 +7,14 @@
 TString TableConverter::convert(const TTable& table)
 {
     for (const auto& row : table) {
-        const auto group = row.at(header_index(EHeader::GROUP) + 1);
-        const auto department = row.at(header_index(EHeader::DEPARTMENT) + 1);
-        const bool isGroupFound = m_groups.count(group) != 0;
-        TNumber score = static_cast<TNumber>(std::stoll(row.at(header_index(EHeader::AVERAGE_SCORE) + 1)));
+        const auto group = row.at(headerIndex(EHeader::GROUP) + 1);
+        const auto department = row.at(headerIndex(EHeader::DEPARTMENT) + 1);
+        const bool isGroupFound = mGroups.count(group) != 0;
+        TNumber score = static_cast<TNumber>(std::stoll(row.at(headerIndex(EHeader::AVERAGE_SCORE) + 1)));
         if (isGroupFound) {
-            std::get<AVERAGE_SCORE>(m_groups.at(group)).push_back(score);
+            std::get<AVERAGE_SCORE>(mGroups.at(group)).push_back(score);
         } else {
-            m_groups.insert({
+            mGroups.insert({
                 group,
                 { department, group, { score } },
             });
@@ -27,49 +27,49 @@ TString TableConverter::convert(const TTable& table)
     // Pair<index, averageScoreByGroup>
     std::vector<std::pair<TNumber, TSignedNumber>> minAverageScoreIndexes{};
     TNumber index = 0;
-    for (const auto& m_group : m_groups) {
-        auto& value = m_group.second;
-        auto averageScoreByGroup = static_cast<TSignedNumber>(average_score_by_group(std::get<GROUP>(value)));
-        if (averageScoreByGroup >= maxAverageScore) {
-            maxAverageScore = averageScoreByGroup;
+    for (const auto& mGroup : mGroups) {
+        auto& value = mGroup.second;
+        auto score = static_cast<TSignedNumber>(averageScoreByGroup(std::get<GROUP>(value)));
+        if (score >= maxAverageScore) {
+            maxAverageScore = score;
             std::vector<std::pair<TNumber, TSignedNumber>> buffer{};
             std::copy_if(
                 maxAverageScoreIndexes.begin(),
                 maxAverageScoreIndexes.end(),
                 std::back_inserter(buffer),
-                [&](std::pair<TNumber, TNumber> value) { return value.second == averageScoreByGroup; });
+                [&](std::pair<TNumber, TNumber> value) { return value.second == score; });
             maxAverageScoreIndexes = buffer;
-            maxAverageScoreIndexes.emplace_back(index, averageScoreByGroup);
+            maxAverageScoreIndexes.emplace_back(index, score);
         }
-        if (averageScoreByGroup <= minAverageScore) {
-            minAverageScore = averageScoreByGroup;
+        if (score <= minAverageScore) {
+            minAverageScore = score;
             std::vector<std::pair<TNumber, TSignedNumber>> buffer{};
             std::copy_if(
                 minAverageScoreIndexes.begin(),
                 minAverageScoreIndexes.end(),
                 std::back_inserter(buffer),
-                [&](std::pair<TNumber, TNumber> value) { return value.second == averageScoreByGroup; });
-            minAverageScoreIndexes.emplace_back(index, averageScoreByGroup);
+                [&](std::pair<TNumber, TNumber> value) { return value.second == score; });
+            minAverageScoreIndexes.emplace_back(index, score);
         }
-        m_table.push_back({
+        mTable.push_back({
             std::get<DEPARTMENT>(value),
             std::get<GROUP>(value),
-            std::to_string(averageScoreByGroup),
+            std::to_string(score),
         });
         index++;
     }
     for (const auto& maxAverageScoreIndex : maxAverageScoreIndexes) {
-        m_table.at(maxAverageScoreIndex.first).at(AVERAGE_SCORE).append("\u0020↑↑↑");
+        mTable.at(maxAverageScoreIndex.first).at(AVERAGE_SCORE).append("\u0020↑↑↑");
     }
     for (const auto& minAverageScoreIndex : minAverageScoreIndexes) {
-        m_table.at(minAverageScoreIndex.first).at(AVERAGE_SCORE).append("\u0020↓↓↓");
+        mTable.at(minAverageScoreIndex.first).at(AVERAGE_SCORE).append("\u0020↓↓↓");
     }
     return get();
 }
 
-TNumber TableConverter::average_score_by_group(TString group)
+TNumber TableConverter::averageScoreByGroup(TString group)
 {
-    auto& scores = std::get<AVERAGE_SCORE>(m_groups.at(group));
+    auto& scores = std::get<AVERAGE_SCORE>(mGroups.at(group));
     TNumber average = 0;
     for (const auto& score : scores) {
         average += score;
@@ -77,15 +77,15 @@ TNumber TableConverter::average_score_by_group(TString group)
     return average / scores.size();
 }
 
-TNumber TableConverter::header_index(TString item)
+TNumber TableConverter::headerIndex(TString item)
 {
     return static_cast<TNumber>(std::distance(
-        m_header.begin(),
-        std::find(m_header.begin(), m_header.end(), item)));
+        mHeader.begin(),
+        std::find(mHeader.begin(), mHeader.end(), item)));
 }
 
 template <typename T, typename I>
-TNumber TableConverter::index_of(T vector, I item)
+TNumber TableConverter::indexOf(T vector, I item)
 {
     return static_cast<TNumber>(std::distance(
         vector.begin(),
@@ -95,8 +95,8 @@ TNumber TableConverter::index_of(T vector, I item)
 TString TableConverter::get()
 {
     TString result;
-    m_table.insert(m_table.begin(), m_header);
-    for (const auto& row : m_table) {
+    mTable.insert(mTable.begin(), mHeader);
+    for (const auto& row : mTable) {
         result += boost::join(row, Table::SPLIT_CHAR) + "\n";
     }
     result = result.substr(0, result.size() - 1);

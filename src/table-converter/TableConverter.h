@@ -20,22 +20,22 @@ private:
         AVERAGE_SCORE
     };
 
-    TTable m_table{};
-    TGroups m_groups{};
-    THeader m_header{
+    TTable mTable{};
+    TGroups mGroups{};
+    THeader mHeader{
         EHeader::DEPARTMENT,
         EHeader::GROUP,
         EHeader::AVERAGE_SCORE,
     };
 
-    TNumber average_score_by_group(TString group);
+    TNumber averageScoreByGroup(TString group);
 
-    TNumber header_index(TString item);
+    TNumber headerIndex(TString item);
 
     TString get();
 
     template <typename T, typename I>
-    TNumber index_of(T vector, I item);
+    TNumber indexOf(T vector, I item);
 
 public:
     TString convert(const TTable& table);
