@@ -18,6 +18,7 @@ gcc 8.1.0, CLion
 #include <iostream>
 #include <string>
 
+#include "Tree.h"
 #include "calculator.h"
 
 int main(int argc, char* argv[])
@@ -31,6 +32,8 @@ int main(int argc, char* argv[])
     try {
         auto postfix = Calculator::parse(line.data());
         std::cout << postfix << std::endl;
+        Tree* root = Tree::construct(postfix);
+        Tree::print(root);
     } catch (std::exception& ex) {
         std::cerr << ex.what() << std::endl;
     }

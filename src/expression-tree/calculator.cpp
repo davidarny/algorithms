@@ -12,73 +12,7 @@
 using namespace Operator;
 using namespace Calculator;
 
-long long Calculator::calculate(const char* pExpression)
-{
-    Stack* pStack = CreateStack();
-    unsigned i = 0;
-    unsigned j = 0;
-    long long buffer = 0;
-    auto* pNumbers = static_cast<long long*>(calloc(NUM_OF_STRINGS, sizeof(long long)));
-    if (pNumbers == nullptr) {
-        throw std::runtime_error("Cannot allocate memory");
-    }
-    char* pCh;
-    char* pBuffer = static_cast<char*>(calloc(STRING_LENGTH, sizeof(char)));
-    if (pBuffer == nullptr) {
-        throw std::runtime_error("Cannot allocate memory");
-    }
-
-    strcat(pBuffer, pExpression);
-
-    pCh = strtok(pBuffer, Operator::join().data());
-    while (pCh != nullptr) {
-        pNumbers[j++] = strtoll(pCh, nullptr, 10);
-        pCh = strtok(nullptr, Operator::join().data());
-    }
-    j = 0;
-
-    while (pExpression[i] != EOLN) {
-        if (check(pExpression[i])) {
-            if (pExpression[i] == operators.at(POWER)) {
-                StackPush(pStack, static_cast<int>(std::pow(StackPop(pStack), StackPop(pStack))));
-            } else if (pExpression[i] == operators.at(UNARY_MINUS)) {
-                StackPush(pStack, -StackPop(pStack));
-            } else if (pExpression[i] == operators.at(UNARY_PLUS)) {
-                StackPush(pStack, StackPop(pStack));
-            } else if (pExpression[i] == operators.at(ADDITION)) {
-                StackPush(pStack, StackPop(pStack) + StackPop(pStack));
-            } else if (pExpression[i] == operators.at(MULTIPLICATION)) {
-                StackPush(pStack, StackPop(pStack) * StackPop(pStack));
-            } else if (pExpression[i] == operators.at(DIVISION)) {
-                buffer = StackPop(pStack);
-                if (buffer != 0) {
-                    StackPush(pStack, StackPop(pStack) / buffer);
-                } else {
-                    free(pBuffer);
-                    free(pNumbers);
-                    throw "Dividing by 0";
-                }
-            } else if (pExpression[i] == operators.at(SUBTRACTION)) {
-                buffer = StackPop(pStack);
-                StackPush(pStack, StackPop(pStack) - buffer);
-            }
-        } else if (pExpression[i] != SPACE) {
-            StackPush(pStack, pNumbers[j]);
-            i += floor(log10(llabs(pNumbers[j])));
-            j++;
-        }
-        i++;
-    }
-
-    free(pBuffer);
-    free(pNumbers);
-    buffer = StackPop(pStack);
-    StackDestroy(pStack);
-
-    return buffer;
-}
-
-bool Calculator::check(char op)
+bool Calculator::isOperator(char op)
 {
     return op == operators.at(ADDITION)
         || op == operators.at(SUBTRACTION)
@@ -110,13 +44,13 @@ char* Calculator::parse(char* pExpression)
         const bool isPrevLeftBracket = k > 0 && pExpression[k - 1] == operators[LEFT_BRACKET].value;
         const bool isLeftBracket = pExpression[k] == operators[LEFT_BRACKET].value;
         const bool isValidUnarySign = k == 0 || isPrevLeftBracket;
-        if (isValidUnarySign) {
+        if (isValidUnarySign && (isMinusSign || isPlusSign)) {
             if (isMinusSign) {
                 StackPush(pStack, operators[UNARY_MINUS].value);
             } else if (isPlusSign) {
                 StackPush(pStack, operators[UNARY_PLUS].value);
             }
-        } else if (check(pExpression[k]) || isLeftBracket) {
+        } else if (isOperator(pExpression[k]) || isLeftBracket) {
             if (!StackIsEmpty(pStack)) {
                 current = static_cast<char>(StackPop(pStack));
                 prevOperator = getByChar(current);
