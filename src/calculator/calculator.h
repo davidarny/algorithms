@@ -9,15 +9,15 @@ static constexpr char SPACE = ' ';
 static constexpr unsigned NUM_OF_STRINGS = 256;
 static constexpr unsigned STRING_LENGTH = 256;
 
-long long calculate(const char* p_expression);
+long long calculate(const char* pExpression);
 
-char* parse(char* p_expression);
+char* parse(char* pExpression);
 
 bool check(char op);
 
 std::string trim(const std::string& str);
 
-void unique_spaces(char* str);
+void uniqueSpaces(char* pExpression);
 
 void isValidChar(char ch);
 }

@@ -11,12 +11,12 @@ typedef struct
 
 Stack* CreateStack();
 
-void StackDestroy(Stack* p_stack);
+void StackDestroy(Stack* pStack);
 
-int StackIsEmpty(Stack* p_stack);
+int StackIsEmpty(Stack* pStack);
 
-void StackPush(Stack* p_stack, TStackElement element);
+void StackPush(Stack* pStack, TStackElement element);
 
-TStackElement StackPop(Stack* p_stack);
+TStackElement StackPop(Stack* pStack);
 
 #endif //ALGORITHMS_STACK_H

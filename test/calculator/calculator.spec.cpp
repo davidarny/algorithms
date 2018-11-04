@@ -7,45 +7,45 @@
 
 TEST_CASE("stack is created")
 {
-    Stack* p_stack = CreateStack();
-    CHECK(p_stack->top == -1);
-    CHECK(p_stack->elements == nullptr);
-    StackDestroy(p_stack);
+    Stack* pStack = CreateStack();
+    CHECK(pStack->top == -1);
+    CHECK(pStack->elements == nullptr);
+    StackDestroy(pStack);
 }
 
 TEST_CASE("stack push works")
 {
     TStackElement element = 10;
-    Stack* p_stack = CreateStack();
-    StackPush(p_stack, element);
-    CHECK(p_stack->top == 0);
-    CHECK(p_stack->elements[p_stack->top] == element);
-    StackDestroy(p_stack);
+    Stack* pStack = CreateStack();
+    StackPush(pStack, element);
+    CHECK(pStack->top == 0);
+    CHECK(pStack->elements[pStack->top] == element);
+    StackDestroy(pStack);
 }
 
 TEST_CASE("stack destroy works")
 {
     TStackElement element = 10;
-    Stack* p_stack = CreateStack();
-    StackPush(p_stack, element);
-    CHECK(p_stack->top == 0);
-    CHECK(p_stack->elements[p_stack->top] == element);
-    StackDestroy(p_stack);
+    Stack* pStack = CreateStack();
+    StackPush(pStack, element);
+    CHECK(pStack->top == 0);
+    CHECK(pStack->elements[pStack->top] == element);
+    StackDestroy(pStack);
 }
 
 TEST_CASE("stack pop works")
 {
     TStackElement element = 10;
-    Stack* p_stack = CreateStack();
-    StackPush(p_stack, element);
-    CHECK(p_stack->top == 0);
-    CHECK(p_stack->elements[p_stack->top] == element);
-    auto popped = StackPop(p_stack);
+    Stack* pStack = CreateStack();
+    StackPush(pStack, element);
+    CHECK(pStack->top == 0);
+    CHECK(pStack->elements[pStack->top] == element);
+    auto popped = StackPop(pStack);
     CHECK(popped == element);
-    CHECK(p_stack->top == -1);
-    CHECK(StackIsEmpty(p_stack));
-    CHECK_THROWS(StackPop(p_stack));
-    StackDestroy(p_stack);
+    CHECK(pStack->top == -1);
+    CHECK(StackIsEmpty(pStack));
+    CHECK_THROWS(StackPop(pStack));
+    StackDestroy(pStack);
 }
 
 TEST_CASE("get operator by char")

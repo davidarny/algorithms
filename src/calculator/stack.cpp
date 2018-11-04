@@ -11,45 +11,45 @@ Stack* CreateStack()
     return p_stack;
 }
 
-void StackDestroy(Stack* p_stack)
+void StackDestroy(Stack* pStack)
 {
-    delete[] p_stack->elements;
-    delete p_stack;
+    delete[] pStack->elements;
+    delete pStack;
 }
 
-int StackIsEmpty(Stack* p_stack)
+int StackIsEmpty(Stack* pStack)
 {
-    return p_stack->top < 0;
+    return pStack->top < 0;
 }
 
-void StackPush(Stack* p_stack, TStackElement element)
+void StackPush(Stack* pStack, TStackElement element)
 {
-    p_stack->top++;
-    if (p_stack->elements == nullptr) {
-        p_stack->elements = static_cast<TStackElement*>(malloc(sizeof(TStackElement) * (p_stack->top + 1)));
+    pStack->top++;
+    if (pStack->elements == nullptr) {
+        pStack->elements = static_cast<TStackElement*>(malloc(sizeof(TStackElement) * (pStack->top + 1)));
     } else {
-        p_stack->elements = static_cast<TStackElement*>(realloc(
-            p_stack->elements,
-            sizeof(TStackElement) * (p_stack->top + 1)));
+        pStack->elements = static_cast<TStackElement*>(realloc(
+            pStack->elements,
+            sizeof(TStackElement) * (pStack->top + 1)));
     }
-    if (p_stack->elements == nullptr) {
+    if (pStack->elements == nullptr) {
         throw std::runtime_error("Cannot allocate memory");
     }
-    p_stack->elements[p_stack->top] = element;
+    pStack->elements[pStack->top] = element;
 }
 
-TStackElement StackPop(Stack* p_stack)
+TStackElement StackPop(Stack* pStack)
 {
-    if (StackIsEmpty(p_stack)) {
+    if (StackIsEmpty(pStack)) {
         throw std::logic_error("Cannot pop from empty stack");
     }
-    auto element = p_stack->elements[p_stack->top--];
-    if (p_stack->top + 1 <= 0) {
-        p_stack->elements = nullptr;
+    auto element = pStack->elements[pStack->top--];
+    if (pStack->top + 1 <= 0) {
+        pStack->elements = nullptr;
     } else {
-        p_stack->elements = static_cast<TStackElement*>(realloc(
-            p_stack->elements,
-            sizeof(TStackElement) * (p_stack->top + 1)));
+        pStack->elements = static_cast<TStackElement*>(realloc(
+            pStack->elements,
+            sizeof(TStackElement) * (pStack->top + 1)));
     }
     return element;
 }

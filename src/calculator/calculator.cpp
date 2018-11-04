@@ -12,66 +12,66 @@
 using namespace Operator;
 using namespace Calculator;
 
-long long Calculator::calculate(const char* p_expression)
+long long Calculator::calculate(const char* pExpression)
 {
-    Stack* p_stack = CreateStack();
+    Stack* pStack = CreateStack();
     unsigned i = 0;
     unsigned j = 0;
     long long buffer = 0;
-    auto* p_numbers = static_cast<long long*>(calloc(NUM_OF_STRINGS, sizeof(long long)));
-    if (p_numbers == nullptr) {
+    auto* pNumbers = static_cast<long long*>(calloc(NUM_OF_STRINGS, sizeof(long long)));
+    if (pNumbers == nullptr) {
         throw std::runtime_error("Cannot allocate memory");
     }
-    char* p_ch;
-    char* p_buffer = static_cast<char*>(calloc(STRING_LENGTH, sizeof(char)));
-    if (p_buffer == nullptr) {
+    char* pCh;
+    char* pBuffer = static_cast<char*>(calloc(STRING_LENGTH, sizeof(char)));
+    if (pBuffer == nullptr) {
         throw std::runtime_error("Cannot allocate memory");
     }
 
-    strcat(p_buffer, p_expression);
+    strcat(pBuffer, pExpression);
 
-    p_ch = strtok(p_buffer, Operator::join().data());
-    while (p_ch != nullptr) {
-        p_numbers[j++] = strtoll(p_ch, nullptr, 10);
-        p_ch = strtok(nullptr, Operator::join().data());
+    pCh = strtok(pBuffer, Operator::join().data());
+    while (pCh != nullptr) {
+        pNumbers[j++] = strtoll(pCh, nullptr, 10);
+        pCh = strtok(nullptr, Operator::join().data());
     }
     j = 0;
 
-    while (p_expression[i] != EOLN) {
-        if (check(p_expression[i])) {
-            if (p_expression[i] == operators.at(POWER)) {
-                StackPush(p_stack, static_cast<int>(std::pow(StackPop(p_stack), StackPop(p_stack))));
-            } else if (p_expression[i] == operators.at(UNARY_MINUS)) {
-                StackPush(p_stack, -StackPop(p_stack));
-            } else if (p_expression[i] == operators.at(ADDITION)) {
-                StackPush(p_stack, StackPop(p_stack) + StackPop(p_stack));
-            } else if (p_expression[i] == operators.at(MULTIPLICATION)) {
-                StackPush(p_stack, StackPop(p_stack) * StackPop(p_stack));
-            } else if (p_expression[i] == operators.at(DIVISION)) {
-                buffer = StackPop(p_stack);
+    while (pExpression[i] != EOLN) {
+        if (check(pExpression[i])) {
+            if (pExpression[i] == operators.at(POWER)) {
+                StackPush(pStack, static_cast<int>(std::pow(StackPop(pStack), StackPop(pStack))));
+            } else if (pExpression[i] == operators.at(UNARY_MINUS)) {
+                StackPush(pStack, -StackPop(pStack));
+            } else if (pExpression[i] == operators.at(ADDITION)) {
+                StackPush(pStack, StackPop(pStack) + StackPop(pStack));
+            } else if (pExpression[i] == operators.at(MULTIPLICATION)) {
+                StackPush(pStack, StackPop(pStack) * StackPop(pStack));
+            } else if (pExpression[i] == operators.at(DIVISION)) {
+                buffer = StackPop(pStack);
                 if (buffer != 0) {
-                    StackPush(p_stack, StackPop(p_stack) / buffer);
+                    StackPush(pStack, StackPop(pStack) / buffer);
                 } else {
-                    free(p_buffer);
-                    free(p_numbers);
+                    free(pBuffer);
+                    free(pNumbers);
                     throw "Dividing by 0";
                 }
-            } else if (p_expression[i] == operators.at(SUBTRACTION)) {
-                buffer = StackPop(p_stack);
-                StackPush(p_stack, StackPop(p_stack) - buffer);
+            } else if (pExpression[i] == operators.at(SUBTRACTION)) {
+                buffer = StackPop(pStack);
+                StackPush(pStack, StackPop(pStack) - buffer);
             }
-        } else if (p_expression[i] != SPACE) {
-            StackPush(p_stack, p_numbers[j]);
-            i += floor(log10(llabs(p_numbers[j])));
+        } else if (pExpression[i] != SPACE) {
+            StackPush(pStack, pNumbers[j]);
+            i += floor(log10(llabs(pNumbers[j])));
             j++;
         }
         i++;
     }
 
-    free(p_buffer);
-    free(p_numbers);
-    buffer = StackPop(p_stack);
-    StackDestroy(p_stack);
+    free(pBuffer);
+    free(pNumbers);
+    buffer = StackPop(pStack);
+    StackDestroy(pStack);
 
     return buffer;
 }
@@ -86,33 +86,33 @@ bool Calculator::check(char op)
         || op == operators.at(POWER);
 }
 
-char* Calculator::parse(char* p_expression)
+char* Calculator::parse(char* pExpression)
 {
-    char* p_buffer = static_cast<char*>(calloc(STRING_LENGTH, sizeof(char)));
-    if (p_buffer == nullptr) {
+    char* pBuffer = static_cast<char*>(calloc(STRING_LENGTH, sizeof(char)));
+    if (pBuffer == nullptr) {
         throw "Cannot allocate memory";
     }
-    char currentChar;
+    char current;
     unsigned int k = 0;
     unsigned int i = 0;
     Operator::TOperator prevOperator;
     Operator::TOperator currentOperator;
-    Stack* p_stack = CreateStack();
+    Stack* pStack = CreateStack();
     Operator::TOperator operators[OPERATORS_SIZE];
     create(operators);
 
-    while (p_expression[k] != EOLN) {
-        const bool isMinusSign = p_expression[k] == operators[SUBTRACTION].value;
-        const bool isPrevLeftBracket = k > 0 && p_expression[k - 1] == operators[LEFT_BRACKET].value;
-        const bool isLeftBracket = p_expression[k] == operators[LEFT_BRACKET].value;
+    while (pExpression[k] != EOLN) {
+        const bool isMinusSign = pExpression[k] == operators[SUBTRACTION].value;
+        const bool isPrevLeftBracket = k > 0 && pExpression[k - 1] == operators[LEFT_BRACKET].value;
+        const bool isLeftBracket = pExpression[k] == operators[LEFT_BRACKET].value;
         const bool isValidUnaryMinus = k == 0 || isPrevLeftBracket;
         if (isMinusSign && isValidUnaryMinus) {
-            StackPush(p_stack, operators[UNARY_MINUS].value);
-        } else if (check(p_expression[k]) || isLeftBracket) {
-            if (!StackIsEmpty(p_stack)) {
-                currentChar = static_cast<char>(StackPop(p_stack));
-                prevOperator = getByChar(currentChar);
-                currentOperator = getByChar(p_expression[k]);
+            StackPush(pStack, operators[UNARY_MINUS].value);
+        } else if (check(pExpression[k]) || isLeftBracket) {
+            if (!StackIsEmpty(pStack)) {
+                current = static_cast<char>(StackPop(pStack));
+                prevOperator = getByChar(current);
+                currentOperator = getByChar(pExpression[k]);
                 bool isPrevPriorityHigher = prevOperator.priority >= currentOperator.priority;
                 if (currentOperator.associativity == Operator::RIGHT) {
                     isPrevPriorityHigher = prevOperator.priority > currentOperator.priority;
@@ -120,53 +120,53 @@ char* Calculator::parse(char* p_expression)
                 const bool isCurrentOpLeftBracket = currentOperator.value == operators[LEFT_BRACKET].value;
                 if (isPrevPriorityHigher && !isCurrentOpLeftBracket) {
                     while (isPrevPriorityHigher) {
-                        p_buffer[i++] = SPACE;
-                        p_buffer[i++] = prevOperator.value;
-                        p_buffer[i++] = SPACE;
-                        auto isCurrentLeftBracket = currentChar == operators[LEFT_BRACKET].value;
-                        if (!StackIsEmpty(p_stack) && !isCurrentLeftBracket) {
-                            currentChar = static_cast<char>(StackPop(p_stack));
-                            prevOperator = getByChar(currentChar);
+                        pBuffer[i++] = SPACE;
+                        pBuffer[i++] = prevOperator.value;
+                        pBuffer[i++] = SPACE;
+                        auto isCurrentLeftBracket = current == operators[LEFT_BRACKET].value;
+                        if (!StackIsEmpty(pStack) && !isCurrentLeftBracket) {
+                            current = static_cast<char>(StackPop(pStack));
+                            prevOperator = getByChar(current);
                         } else {
                             break;
                         }
                         isPrevPriorityHigher = prevOperator.priority >= currentOperator.priority;
                         if (!isPrevPriorityHigher) {
-                            StackPush(p_stack, prevOperator.value);
+                            StackPush(pStack, prevOperator.value);
                         }
                         if (currentOperator.associativity == Operator::RIGHT) {
                             isPrevPriorityHigher = prevOperator.priority > currentOperator.priority;
                         }
                     }
                 } else {
-                    StackPush(p_stack, currentChar);
+                    StackPush(pStack, current);
                 }
             }
-            StackPush(p_stack, static_cast<long long>(p_expression[k]));
-            p_buffer[i++] = SPACE;
-        } else if (p_expression[k] == operators[RIGHT_BRACKET].value) {
-            currentChar = static_cast<char>(StackPop(p_stack));
-            while (currentChar != operators[LEFT_BRACKET].value) {
-                p_buffer[i++] = SPACE;
-                p_buffer[i++] = currentChar;
-                p_buffer[i++] = SPACE;
-                currentChar = static_cast<char>(StackPop(p_stack));
+            StackPush(pStack, static_cast<long long>(pExpression[k]));
+            pBuffer[i++] = SPACE;
+        } else if (pExpression[k] == operators[RIGHT_BRACKET].value) {
+            current = static_cast<char>(StackPop(pStack));
+            while (current != operators[LEFT_BRACKET].value) {
+                pBuffer[i++] = SPACE;
+                pBuffer[i++] = current;
+                pBuffer[i++] = SPACE;
+                current = static_cast<char>(StackPop(pStack));
             }
-        } else if (p_expression[k] != SPACE) {
-            isValidChar(p_expression[k]);
-            p_buffer[i++] = p_expression[k];
+        } else if (pExpression[k] != SPACE) {
+            isValidChar(pExpression[k]);
+            pBuffer[i++] = pExpression[k];
         }
         k++;
     }
 
-    while (!StackIsEmpty(p_stack)) {
-        p_buffer[i++] = SPACE;
-        p_buffer[i++] = static_cast<char>(StackPop(p_stack));
+    while (!StackIsEmpty(pStack)) {
+        pBuffer[i++] = SPACE;
+        pBuffer[i++] = static_cast<char>(StackPop(pStack));
     }
 
-    StackDestroy(p_stack);
-    unique_spaces(p_buffer);
-    return p_buffer;
+    StackDestroy(pStack);
+    uniqueSpaces(pBuffer);
+    return pBuffer;
 }
 
 std::string Calculator::trim(const std::string& str)
@@ -184,11 +184,11 @@ void Calculator::isValidChar(char ch)
     }
 }
 
-void Calculator::unique_spaces(char* str)
+void Calculator::uniqueSpaces(char* pExpression)
 {
-    std::string input(str);
+    std::string input(pExpression);
     std::string output;
     std::unique_copy(input.begin(), input.end(), std::back_insert_iterator<std::string>(output),
         [](char a, char b) { return std::isspace(a) && std::isspace(b); });
-    strcpy(str, output.data());
+    strcpy(pExpression, output.data());
 }

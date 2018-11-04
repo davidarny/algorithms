@@ -32,26 +32,26 @@ void Operator::create(TOperator array[OPERATORS_SIZE])
     multiplication.associativity = LEFT;
     array[MULTIPLICATION] = multiplication;
 
-    TOperator left_bracket;
-    left_bracket.value = operators.at(LEFT_BRACKET);
-    left_bracket.id = LEFT_BRACKET;
-    left_bracket.priority = priorities.at(LEFT_BRACKET);
-    left_bracket.associativity = LEFT;
-    array[LEFT_BRACKET] = left_bracket;
+    TOperator leftBracket;
+    leftBracket.value = operators.at(LEFT_BRACKET);
+    leftBracket.id = LEFT_BRACKET;
+    leftBracket.priority = priorities.at(LEFT_BRACKET);
+    leftBracket.associativity = LEFT;
+    array[LEFT_BRACKET] = leftBracket;
 
-    TOperator right_bracket;
-    right_bracket.value = operators.at(RIGHT_BRACKET);
-    right_bracket.id = RIGHT_BRACKET;
-    right_bracket.priority = priorities.at(RIGHT_BRACKET);
-    right_bracket.associativity = LEFT;
-    array[RIGHT_BRACKET] = right_bracket;
+    TOperator rightBracket;
+    rightBracket.value = operators.at(RIGHT_BRACKET);
+    rightBracket.id = RIGHT_BRACKET;
+    rightBracket.priority = priorities.at(RIGHT_BRACKET);
+    rightBracket.associativity = LEFT;
+    array[RIGHT_BRACKET] = rightBracket;
 
-    TOperator unary_minus;
-    unary_minus.value = operators.at(UNARY_MINUS);
-    unary_minus.id = UNARY_MINUS;
-    unary_minus.priority = priorities.at(UNARY_MINUS);
-    unary_minus.associativity = LEFT;
-    array[UNARY_MINUS] = unary_minus;
+    TOperator unaryMinus;
+    unaryMinus.value = operators.at(UNARY_MINUS);
+    unaryMinus.id = UNARY_MINUS;
+    unaryMinus.priority = priorities.at(UNARY_MINUS);
+    unaryMinus.associativity = LEFT;
+    array[UNARY_MINUS] = unaryMinus;
 
     TOperator empty;
     empty.value = operators.at(EMPTY);
