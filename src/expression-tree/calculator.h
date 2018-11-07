@@ -8,15 +8,13 @@ static constexpr char EOLN = '\0';
 static constexpr char SPACE = ' ';
 static constexpr unsigned STRING_LENGTH = 256;
 
-char* parse(char* pExpression);
+char* parse(char* expression);
 
 bool isOperator(char op);
 
 std::string trim(const std::string& str);
 
-void toUniqueSpaces(char* pExpression);
-
-void isValidChar(char ch);
+void trimAll(char* expression);
 }
 
 #endif //ALGORITHMS_CALCULATOR_H

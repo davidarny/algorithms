@@ -20,7 +20,7 @@ private:
 public:
     explicit Tree(const TTreeValue& value);
 
-    static Tree* construct(char* pExpression);
+    static Tree* construct(char* expression);
 
     static void print(Tree* root);
 };

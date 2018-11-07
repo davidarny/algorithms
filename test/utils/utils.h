@@ -3,6 +3,8 @@
 
 #include "table-converter/table-converter.h"
 
-void createFile(TString path, TString sample);
+namespace File {
+void create(TString path, TString sample);
+}
 
 #endif //ALGORITHMS_UTILS_H

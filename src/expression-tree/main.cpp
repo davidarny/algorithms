@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
     std::getline(std::cin, line);
     line = Calculator::trim(line);
     try {
-        auto postfix = Calculator::parse(line.data());
+        const auto postfix = Calculator::parse(line.data());
         std::cout << postfix << std::endl;
         Tree* root = Tree::construct(postfix);
         Tree::print(root);

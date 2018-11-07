@@ -2,7 +2,7 @@
 
 #include "utils.h"
 
-void createFile(TString path, TString sample)
+void File::create(TString path, TString sample)
 {
     std::ofstream outfile(path);
     outfile << sample << std::endl;

@@ -5,56 +5,59 @@
 
 #include "stack.h"
 
-Stack* CreateStack()
+const Stack::TStack& Stack::create()
 {
-    auto* p_stack = new Stack();
-    p_stack->elements = nullptr;
-    p_stack->top = -1;
-    return p_stack;
+    const auto stack = new TStack();
+    stack->elements = nullptr;
+    stack->top = -1;
+    return *stack;
 }
 
-void StackDestroy(Stack* pStack)
+void Stack::destroy(const TStack& stack)
 {
-    delete[] pStack->elements;
-    delete pStack;
+    delete[] stack.elements;
+    // TODO: fix crash
+    // delete &stack;
 }
 
-int StackIsEmpty(Stack* pStack)
+int Stack::isEmpty(const TStack& stack)
 {
-    return pStack->top < 0;
+    return stack.top < 0;
 }
 
-void StackPush(Stack* pStack, TStackElement element)
+void Stack::push(TStack& stack, const TElement& element)
 {
-    std::size_t length = sizeof(element) / sizeof(char);
-    char* stackElement = static_cast<TStackElement>(malloc(sizeof(TStackElement) * length));
-    strcpy(stackElement, element);
-    pStack->top++;
-    if (pStack->elements == nullptr) {
-        pStack->elements = static_cast<TStackElement*>(malloc(sizeof(TStackElement) * (pStack->top + 1)));
+    const std::size_t elementSize = sizeof(element) / sizeof(char);
+    char* buffer = static_cast<TElement>(malloc(sizeof(TElement) * elementSize));
+    strcpy(buffer, element);
+    stack.top++;
+    if (stack.elements == nullptr) {
+        stack.elements = static_cast<TElement*>(malloc(sizeof(TElement) * (stack.top + 1)));
     } else {
-        pStack->elements = static_cast<TStackElement*>(realloc(
-            pStack->elements,
-            sizeof(TStackElement) * (pStack->top + 1)));
+        stack.elements = static_cast<TElement*>(
+            realloc(
+                stack.elements,
+                sizeof(TElement) * (stack.top + 1)));
     }
-    if (pStack->elements == nullptr) {
+    if (stack.elements == nullptr) {
         throw std::runtime_error("Cannot allocate memory");
     }
-    pStack->elements[pStack->top] = stackElement;
+    stack.elements[stack.top] = buffer;
 }
 
-TStackElement StackPop(Stack* pStack)
+Stack::TElement Stack::pop(TStack& stack)
 {
-    if (StackIsEmpty(pStack)) {
+    if (isEmpty(stack)) {
         throw std::logic_error("Cannot pop from empty stack");
     }
-    auto element = pStack->elements[pStack->top--];
-    if (pStack->top + 1 <= 0) {
-        pStack->elements = nullptr;
+    const auto element = stack.elements[stack.top--];
+    if (stack.top + 1 <= 0) {
+        stack.elements = nullptr;
     } else {
-        pStack->elements = static_cast<TStackElement*>(realloc(
-            pStack->elements,
-            sizeof(TStackElement) * (pStack->top + 1)));
+        stack.elements = static_cast<TElement*>(
+            realloc(
+                stack.elements,
+                sizeof(TElement) * (stack.top + 1)));
     }
     return element;
 }

@@ -3,22 +3,23 @@
 
 #include <string>
 
-typedef char* TStackElement;
-
+namespace Stack {
+typedef char* TElement;
 typedef struct
 {
-    TStackElement* elements;
+    TElement* elements;
     int top;
-} Stack;
+} TStack;
 
-Stack* CreateStack();
+const TStack& create();
 
-void StackDestroy(Stack* pStack);
+void destroy(const TStack& stack);
 
-int StackIsEmpty(Stack* pStack);
+int isEmpty(const TStack& stack);
 
-void StackPush(Stack* pStack, TStackElement element);
+void push(TStack& stack, const TElement& element);
 
-TStackElement StackPop(Stack* pStack);
+TElement pop(TStack& stack);
+}
 
 #endif //ALGORITHMS_STACK_H

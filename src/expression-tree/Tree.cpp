@@ -13,13 +13,13 @@ Tree::Tree(const TTreeValue& value)
     right = nullptr;
 }
 
-Tree* Tree::construct(char* pExpression)
+Tree* Tree::construct(char* expression)
 {
     std::stack<Tree*> stack;
     Tree *root, *left, *right;
 
-    for (int i = 0; i < strlen(pExpression); ++i) {
-        auto ch = pExpression[i];
+    for (int i = 0; i < strlen(expression); ++i) {
+        auto ch = expression[i];
         auto isSpace = ch == Calculator::SPACE;
         auto isOperator = Calculator::isOperator(ch);
         if (isSpace) {
@@ -30,7 +30,7 @@ Tree* Tree::construct(char* pExpression)
             while (!isOperator && !isSpace) {
                 identifier += ch;
                 i++;
-                ch = pExpression[i];
+                ch = expression[i];
                 isSpace = ch == Calculator::SPACE;
                 isOperator = ch == Calculator::isOperator(ch);
             }

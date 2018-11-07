@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
 #include <cmath>
 #include <cstdlib>
 #include <iterator>
@@ -11,6 +12,7 @@
 
 using namespace Operator;
 using namespace Calculator;
+using namespace Stack;
 
 bool Calculator::isOperator(char op)
 {
@@ -23,91 +25,93 @@ bool Calculator::isOperator(char op)
         || op == operators.at(POWER);
 }
 
-char* Calculator::parse(char* pExpression)
+char* Calculator::parse(char* expression)
 {
-    char* pBuffer = static_cast<char*>(calloc(STRING_LENGTH, sizeof(char)));
-    if (pBuffer == nullptr) {
+    char* buffer = static_cast<char*>(calloc(STRING_LENGTH, sizeof(char)));
+    if (buffer == nullptr) {
         throw "Cannot allocate memory";
     }
     char current;
-    unsigned int k = 0;
-    unsigned int i = 0;
-    Operator::TOperator prevOperator;
-    Operator::TOperator currentOperator;
-    Stack* pStack = CreateStack();
-    Operator::TOperator operators[OPERATORS_SIZE];
+    unsigned int cycleIndex = 0;
+    unsigned int bufferIndex = 0;
+    TOperator prevOperator;
+    TOperator currentOperator;
+    auto stack = create();
+    TOperator operators[OPERATORS_SIZE];
     create(operators);
 
-    while (pExpression[k] != EOLN) {
-        const bool isMinusSign = pExpression[k] == operators[SUBTRACTION].value;
-        const bool isPlusSign = pExpression[k] == operators[ADDITION].value;
-        const bool isPrevLeftBracket = k > 0 && pExpression[k - 1] == operators[LEFT_BRACKET].value;
-        const bool isLeftBracket = pExpression[k] == operators[LEFT_BRACKET].value;
-        const bool isValidUnarySign = k == 0 || isPrevLeftBracket;
+    while (expression[cycleIndex] != EOLN) {
+        const char ch = expression[cycleIndex];
+        const bool isMinusSign = ch == operators[SUBTRACTION].value;
+        const bool isPlusSign = ch == operators[ADDITION].value;
+        const bool isPrevLeftBracket = cycleIndex > 0 && expression[cycleIndex - 1] == operators[LEFT_BRACKET].value;
+        const bool isLeftBracket = ch == operators[LEFT_BRACKET].value;
+        const bool isValidUnarySign = cycleIndex == 0 || isPrevLeftBracket;
         if (isValidUnarySign && (isMinusSign || isPlusSign)) {
             if (isMinusSign) {
-                StackPush(pStack, std::string{ operators[UNARY_MINUS].value }.data());
+                push(stack, std::string{ operators[UNARY_MINUS].value }.data());
             } else {
-                StackPush(pStack, std::string{ operators[UNARY_PLUS].value }.data());
+                push(stack, std::string{ operators[UNARY_PLUS].value }.data());
             }
-        } else if (isOperator(pExpression[k]) || isLeftBracket) {
-            if (!StackIsEmpty(pStack)) {
-                current = StackPop(pStack)[0];
+        } else if (isOperator(ch) || isLeftBracket) {
+            if (!isEmpty(stack)) {
+                current = *pop(stack);
                 prevOperator = getByChar(current);
-                currentOperator = getByChar(pExpression[k]);
+                currentOperator = getByChar(ch);
                 bool isPrevPriorityHigher = prevOperator.priority >= currentOperator.priority;
-                if (currentOperator.associativity == Operator::RIGHT) {
+                if (currentOperator.associativity == RIGHT) {
                     isPrevPriorityHigher = prevOperator.priority > currentOperator.priority;
                 }
                 const bool isCurrentOpLeftBracket = currentOperator.value == operators[LEFT_BRACKET].value;
                 if (isPrevPriorityHigher && !isCurrentOpLeftBracket) {
                     while (isPrevPriorityHigher) {
-                        pBuffer[i++] = SPACE;
-                        pBuffer[i++] = prevOperator.value;
-                        pBuffer[i++] = SPACE;
-                        auto isCurrentLeftBracket = current == operators[LEFT_BRACKET].value;
-                        if (!StackIsEmpty(pStack) && !isCurrentLeftBracket) {
-                            current = StackPop(pStack)[0];
+                        buffer[bufferIndex++] = SPACE;
+                        buffer[bufferIndex++] = prevOperator.value;
+                        buffer[bufferIndex++] = SPACE;
+                        const auto isCurrentLeftBracket = current == operators[LEFT_BRACKET].value;
+                        if (!isEmpty(stack) && !isCurrentLeftBracket) {
+                            current = *pop(stack);
                             prevOperator = getByChar(current);
                         } else {
                             break;
                         }
                         isPrevPriorityHigher = prevOperator.priority >= currentOperator.priority;
                         if (!isPrevPriorityHigher) {
-                            StackPush(pStack, std::string{ prevOperator.value }.data());
+                            push(stack, std::string{ prevOperator.value }.data());
                         }
-                        if (currentOperator.associativity == Operator::RIGHT) {
+                        if (currentOperator.associativity == RIGHT) {
                             isPrevPriorityHigher = prevOperator.priority > currentOperator.priority;
                         }
                     }
                 } else {
-                    StackPush(pStack, std::string{ current }.data());
+                    push(stack, std::string{ current }.data());
                 }
             }
-            StackPush(pStack, std::string{ pExpression[k] }.data());
-            pBuffer[i++] = SPACE;
-        } else if (pExpression[k] == operators[RIGHT_BRACKET].value) {
-            current = StackPop(pStack)[0];
+            push(stack, std::string{ ch }.data());
+            buffer[bufferIndex++] = SPACE;
+        } else if (ch == operators[RIGHT_BRACKET].value) {
+            current = *pop(stack);
             while (current != operators[LEFT_BRACKET].value) {
-                pBuffer[i++] = SPACE;
-                pBuffer[i++] = current;
-                pBuffer[i++] = SPACE;
-                current = StackPop(pStack)[0];
+                buffer[bufferIndex++] = SPACE;
+                buffer[bufferIndex++] = current;
+                buffer[bufferIndex++] = SPACE;
+                current = *pop(stack);
             }
-        } else if (pExpression[k] != SPACE) {
-            pBuffer[i++] = pExpression[k];
+        } else if (ch != SPACE) {
+            buffer[bufferIndex++] = ch;
         }
-        k++;
+        cycleIndex++;
     }
 
-    while (!StackIsEmpty(pStack)) {
-        pBuffer[i++] = SPACE;
-        pBuffer[i++] = StackPop(pStack)[0];
+    while (!isEmpty(stack)) {
+        buffer[bufferIndex++] = SPACE;
+        buffer[bufferIndex++] = *pop(stack);
     }
 
-    StackDestroy(pStack);
-    toUniqueSpaces(pBuffer);
-    return pBuffer;
+    destroy(stack);
+    trimAll(buffer);
+
+    return buffer;
 }
 
 std::string Calculator::trim(const std::string& str)
@@ -117,19 +121,18 @@ std::string Calculator::trim(const std::string& str)
     return buffer;
 }
 
-void Calculator::isValidChar(char ch)
+void Calculator::trimAll(char* expression)
 {
-    auto isValidChar = std::isdigit(ch);
-    if (!isValidChar) {
-        throw std::logic_error("Error: " + std::string({ ch }) + " in not a digit");
-    }
-}
-
-void Calculator::toUniqueSpaces(char* pExpression)
-{
-    std::string input(pExpression);
+    const std::string input(expression);
     std::string output;
-    std::unique_copy(input.begin(), input.end(), std::back_insert_iterator<std::string>(output),
-        [](char a, char b) { return std::isspace(a) && std::isspace(b); });
-    strcpy(pExpression, output.data());
+    const auto onCopy = [](char a, char b) {
+        return std::isspace(a) && std::isspace(b);
+    };
+    std::unique_copy(
+        input.begin(),
+        input.end(),
+        std::back_insert_iterator<std::string>(output),
+        onCopy);
+    boost::trim(output);
+    strcpy(expression, output.data());
 }
