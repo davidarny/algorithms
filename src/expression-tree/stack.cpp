@@ -1,5 +1,7 @@
+#include <cstring>
 #include <malloc.h>
 #include <stdexcept>
+#include <utility>
 
 #include "stack.h"
 
@@ -24,6 +26,9 @@ int StackIsEmpty(Stack* pStack)
 
 void StackPush(Stack* pStack, TStackElement element)
 {
+    std::size_t length = sizeof(element) / sizeof(char);
+    char* stackElement = static_cast<TStackElement>(malloc(sizeof(TStackElement) * length));
+    strcpy(stackElement, element);
     pStack->top++;
     if (pStack->elements == nullptr) {
         pStack->elements = static_cast<TStackElement*>(malloc(sizeof(TStackElement) * (pStack->top + 1)));
@@ -35,7 +40,7 @@ void StackPush(Stack* pStack, TStackElement element)
     if (pStack->elements == nullptr) {
         throw std::runtime_error("Cannot allocate memory");
     }
-    pStack->elements[pStack->top] = element;
+    pStack->elements[pStack->top] = stackElement;
 }
 
 TStackElement StackPop(Stack* pStack)

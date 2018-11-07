@@ -46,13 +46,13 @@ char* Calculator::parse(char* pExpression)
         const bool isValidUnarySign = k == 0 || isPrevLeftBracket;
         if (isValidUnarySign && (isMinusSign || isPlusSign)) {
             if (isMinusSign) {
-                StackPush(pStack, operators[UNARY_MINUS].value);
-            } else if (isPlusSign) {
-                StackPush(pStack, operators[UNARY_PLUS].value);
+                StackPush(pStack, std::string{ operators[UNARY_MINUS].value }.data());
+            } else {
+                StackPush(pStack, std::string{ operators[UNARY_PLUS].value }.data());
             }
         } else if (isOperator(pExpression[k]) || isLeftBracket) {
             if (!StackIsEmpty(pStack)) {
-                current = static_cast<char>(StackPop(pStack));
+                current = StackPop(pStack)[0];
                 prevOperator = getByChar(current);
                 currentOperator = getByChar(pExpression[k]);
                 bool isPrevPriorityHigher = prevOperator.priority >= currentOperator.priority;
@@ -67,35 +67,34 @@ char* Calculator::parse(char* pExpression)
                         pBuffer[i++] = SPACE;
                         auto isCurrentLeftBracket = current == operators[LEFT_BRACKET].value;
                         if (!StackIsEmpty(pStack) && !isCurrentLeftBracket) {
-                            current = static_cast<char>(StackPop(pStack));
+                            current = StackPop(pStack)[0];
                             prevOperator = getByChar(current);
                         } else {
                             break;
                         }
                         isPrevPriorityHigher = prevOperator.priority >= currentOperator.priority;
                         if (!isPrevPriorityHigher) {
-                            StackPush(pStack, prevOperator.value);
+                            StackPush(pStack, std::string{ prevOperator.value }.data());
                         }
                         if (currentOperator.associativity == Operator::RIGHT) {
                             isPrevPriorityHigher = prevOperator.priority > currentOperator.priority;
                         }
                     }
                 } else {
-                    StackPush(pStack, current);
+                    StackPush(pStack, std::string{ current }.data());
                 }
             }
-            StackPush(pStack, static_cast<long long>(pExpression[k]));
+            StackPush(pStack, std::string{ pExpression[k] }.data());
             pBuffer[i++] = SPACE;
         } else if (pExpression[k] == operators[RIGHT_BRACKET].value) {
-            current = static_cast<char>(StackPop(pStack));
+            current = StackPop(pStack)[0];
             while (current != operators[LEFT_BRACKET].value) {
                 pBuffer[i++] = SPACE;
                 pBuffer[i++] = current;
                 pBuffer[i++] = SPACE;
-                current = static_cast<char>(StackPop(pStack));
+                current = StackPop(pStack)[0];
             }
         } else if (pExpression[k] != SPACE) {
-            isValidChar(pExpression[k]);
             pBuffer[i++] = pExpression[k];
         }
         k++;
@@ -103,7 +102,7 @@ char* Calculator::parse(char* pExpression)
 
     while (!StackIsEmpty(pStack)) {
         pBuffer[i++] = SPACE;
-        pBuffer[i++] = static_cast<char>(StackPop(pStack));
+        pBuffer[i++] = StackPop(pStack)[0];
     }
 
     StackDestroy(pStack);

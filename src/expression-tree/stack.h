@@ -1,7 +1,9 @@
 #ifndef ALGORITHMS_STACK_H
 #define ALGORITHMS_STACK_H
 
-typedef long long TStackElement;
+#include <string>
+
+typedef char* TStackElement;
 
 typedef struct
 {
