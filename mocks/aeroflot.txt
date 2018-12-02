@@ -1,3 +1,5 @@
-Moscow-Kazan
+Moscow-Paris
 NewYork-London
 Paris-Berlin
+Paris-Kazan
+Moscow-Kazan

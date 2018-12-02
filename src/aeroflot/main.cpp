@@ -27,9 +27,20 @@ std::string_view path(char* argv[])
 int main(int argc, char* argv[])
 {
     std::unique_ptr<GraphView> graph(new GraphView);
+    std::string_view from = "Moscow";
+    std::string_view to = "Kazan";
+    std::cout
+        << "Going from "
+        << from
+        << "to "
+        << to << ":"
+        << std::endl
+        << std::endl;
     try {
         graph->parse(path(argv));
         graph->print();
+        std::cout << std::endl;
+        graph->search(from, to);
     } catch (std::exception& ex) {
         graph->error(ex);
     }
