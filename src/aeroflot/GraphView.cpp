@@ -1,7 +1,3 @@
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 #include <boost/algorithm/string.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <fstream>
@@ -61,11 +57,6 @@ std::pair<TGraph*, std::map<TGraph::vertex_descriptor, std::string>*> GraphView:
 
 void GraphView::print()
 {
-#ifdef _WIN32
-    auto& out = std::wcout;
-#else
-    auto& out = std::cout;
-#endif
     TGraph* graph;
     std::map<TGraph::vertex_descriptor, std::string>* map;
     std::tie(graph, map) = get();
@@ -73,17 +64,12 @@ void GraphView::print()
     for (auto vit = vertices.first; vit != vertices.second; ++vit) {
         auto neighbors = boost::adjacent_vertices(*vit, *graph);
         for (auto nit = neighbors.first; nit != neighbors.second; ++nit) {
-            out << map->at(*vit) << ' ' << map->at(*nit) << std::endl;
+            std::cout << map->at(*vit) << ' ' << map->at(*nit) << std::endl;
         }
     }
 }
 
 void GraphView::error(const std::exception& ex)
 {
-#ifdef _WIN32
-    auto& err = std::wcout;
-#else
-    auto& err = std::cout;
-#endif
-    err << "[Error]: " << ex.what() << std::endl;
+    std::cerr << "[Error]: " << ex.what() << std::endl;
 }

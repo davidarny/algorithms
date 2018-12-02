@@ -22,7 +22,7 @@
         "init:test": "mkdir cmake-build && cd cmake-build && cross-env CI=true cmake -DCMAKE_SH=\"CMAKE_SH-NOTFOUND\" -DCMAKE_BUILD_TYPE=Debug -G \"CodeBlocks - MinGW Makefiles\" ..",
         "build": "cd cmake-build && cmake --build .",
         "build:test": "cd cmake-build && cmake --build .",
-        "test": "npm run build:test && cd bin && table-converter_test && calculator_test"
+        "test": "npm run build:test && cd bin && table-converter_test && calculator_test && expression-tree_test && aeroflot_test"
     },
     "author": "David Arutiunian <arutunjan666@mail.com>",
     "license": "ISC",
