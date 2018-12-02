@@ -80,19 +80,25 @@ void GraphView::error(const std::exception& ex)
     std::cerr << "[Error]: " << ex.what() << std::endl;
 }
 
-void GraphView::search(const std::string_view& from, const std::string_view& to)
+void GraphView::search(const std::string_view& from, const std::string_view& to, const std::string_view& type)
 {
-    std::vector<std::vector<int>> adjList(mVertexMap.size() - 1);
-    traverse([&](auto first, auto second) {
-        adjList[first].push_back(second);
-    });
-    std::size_t size = adjList.size() * 2;
-    auto source = mIndexMap.at(std::string(from));
-    auto goal = mIndexMap.at(std::string(to));
-    std::vector<bool> visited(size, false);
-    std::vector<int> paths(size);
-    int pathIndex = 0;
-    recursiveSearch(source, goal, visited, paths, pathIndex, adjList);
+    if (type == search_t[ESearchType::DFS]) {
+        std::vector<std::vector<int>> adj(mVertexMap.size() - 1);
+        traverse([&](auto first, auto second) {
+            adj[first].push_back(second);
+        });
+        std::size_t size = adj.size() * 2;
+        auto source = mIndexMap.at(std::string(from));
+        auto goal = mIndexMap.at(std::string(to));
+        std::vector<bool> visited(size, false);
+        std::vector<int> paths(size);
+        int pathIndex = 0;
+        dfs(source, goal, visited, paths, pathIndex, adj);
+    } else if (type == search_t[ESearchType::BFS]) {
+        // TODO: add BFS algorithm
+    } else {
+        throw std::runtime_error("Unsupported search type " + std::string(type));
+    }
 }
 
 void GraphView::traverse(std::function<void(unsigned long, unsigned long)> callback)
@@ -110,10 +116,10 @@ void GraphView::traverse(std::function<void(unsigned long, unsigned long)> callb
     }
 }
 
-void GraphView::recursiveSearch(int from,
+void GraphView::dfs(int from,
     int to, std::vector<bool>& visited,
     std::vector<int>& paths, int pathIndex,
-    std::vector<std::vector<int>>& adjList)
+    std::vector<std::vector<int>>& adj)
 {
     visited[from] = true;
     paths[pathIndex] = from;
@@ -130,9 +136,9 @@ void GraphView::recursiveSearch(int from,
         std::cout << std::endl;
     } else {
         std::vector<int>::iterator it;
-        for (it = adjList[from].begin(); it != adjList[from].end(); ++it) {
+        for (it = adj[from].begin(); it != adj[from].end(); ++it) {
             if (!visited[*it]) {
-                recursiveSearch(*it, to, visited, paths, pathIndex, adjList);
+                dfs(*it, to, visited, paths, pathIndex, adj);
             }
         }
     }

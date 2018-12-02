@@ -10,6 +10,12 @@ typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::directedS, TVerte
 
 class GraphView {
 private:
+    enum ESearchType {
+        DFS = 0,
+        BFS,
+    };
+    std::vector<std::string_view> search_t{ "DFS", "BFS" };
+
     TGraph mGraph;
     std::map<TGraph::vertex_descriptor, std::string> mVertexMap;
     std::map<std::string, TGraph::vertex_descriptor> mIndexMap;
@@ -18,11 +24,11 @@ private:
 
     void traverse(std::function<void(unsigned long, unsigned long)> callback);
 
-    void recursiveSearch(int from, int to,
+    void dfs(int from, int to,
         std::vector<bool>& visited,
         std::vector<int>& paths,
         int pathIndex,
-        std::vector<std::vector<int>>& adjList);
+        std::vector<std::vector<int>>& adj);
 
 public:
     void parse(const std::string_view& path);
@@ -33,7 +39,7 @@ public:
 
     void error(const std::exception& ex);
 
-    void search(const std::string_view& from, const std::string_view& to);
+    void search(const std::string_view& from, const std::string_view& to, const std::string_view& type);
 };
 
 #endif //ALGORITHMS_GRAPH_H
