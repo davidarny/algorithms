@@ -5,7 +5,7 @@
 #include "Table.h"
 #include "table-converter.h"
 
-TString tableConverter(TString path)
+TString convert(TString path)
 {
     TRow lines;
     TString line;

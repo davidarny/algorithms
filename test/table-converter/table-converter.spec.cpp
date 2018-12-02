@@ -24,7 +24,7 @@ TEST_CASE("table-converter creates file")
 TEST_CASE("table-converter reads file")
 {
     File::create(PATH, SAMPLE_TEXT);
-    TString result = tableConverter(PATH);
+    TString result = convert(PATH);
     CHECK(result.size() != 0);
     std::remove(PATH.data());
 }

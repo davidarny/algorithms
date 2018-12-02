@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
     TString path = argv[1];
     TString text;
     try {
-        text = tableConverter(path);
+        text = convert(path);
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
         return -1;
