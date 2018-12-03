@@ -30,6 +30,8 @@ private:
         int pathIndex,
         std::vector<std::vector<int>>& adj);
 
+    void bfs(int from, int to, std::vector<std::vector<int>>& adj);
+
 public:
     void parse(const std::string_view& path);
 

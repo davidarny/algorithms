@@ -3,6 +3,6 @@
 
 TEST_CASE("GraphView works")
 {
-    std::unique_ptr<GraphView> graph(new GraphView);
-    CHECK_NOTHROW(graph->print());
+    GraphView graph;
+    CHECK_NOTHROW(graph.print());
 }

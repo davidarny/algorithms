@@ -10,7 +10,6 @@ gcc version 8.1.0
 
 #include <algorithm>
 #include <iostream>
-#include <memory>
 #include <string_view>
 
 #include "GraphView.h"
@@ -26,10 +25,10 @@ std::string_view path(char* argv[])
 
 int main(int argc, char* argv[])
 {
-    std::unique_ptr<GraphView> graph(new GraphView);
+    GraphView graph;
     constexpr std::string_view from = "Moscow";
     constexpr std::string_view to = "Kazan";
-    constexpr std::string_view type = "DFS";
+    constexpr std::string_view type = "BFS";
     std::cout
         << "Going from "
         << from
@@ -37,12 +36,12 @@ int main(int argc, char* argv[])
         << to << ":"
         << std::endl;
     try {
-        graph->parse(path(argv));
-        graph->print();
+        graph.parse(path(argv));
+        graph.print();
         std::cout << std::endl
                   << "Found: " << std::endl;
-        graph->search(from, to, type);
+        graph.search(from, to, type);
     } catch (std::exception& ex) {
-        graph->error(ex);
+        graph.error(ex);
     }
 }

@@ -1,6 +1,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/breadth_first_search.hpp>
+#include <boost/graph/graph_traits.hpp>
 #include <fstream>
 #include <iostream>
 #include <queue>
@@ -82,20 +83,20 @@ void GraphView::error(const std::exception& ex)
 
 void GraphView::search(const std::string_view& from, const std::string_view& to, const std::string_view& type)
 {
+    std::vector<std::vector<int>> adj(mVertexMap.size());
+    traverse([&](auto first, auto second) {
+        adj[first].push_back(second);
+    });
+    std::size_t size = adj.size() * 2;
+    auto source = mIndexMap.at(std::string(from));
+    auto goal = mIndexMap.at(std::string(to));
     if (type == search_t[ESearchType::DFS]) {
-        std::vector<std::vector<int>> adj(mVertexMap.size() - 1);
-        traverse([&](auto first, auto second) {
-            adj[first].push_back(second);
-        });
-        std::size_t size = adj.size() * 2;
-        auto source = mIndexMap.at(std::string(from));
-        auto goal = mIndexMap.at(std::string(to));
         std::vector<bool> visited(size, false);
         std::vector<int> paths(size);
         int pathIndex = 0;
         dfs(source, goal, visited, paths, pathIndex, adj);
     } else if (type == search_t[ESearchType::BFS]) {
-        // TODO: add BFS algorithm
+        bfs(source, goal, adj);
     } else {
         throw std::runtime_error("Unsupported search type " + std::string(type));
     }
@@ -144,4 +145,51 @@ void GraphView::dfs(int from,
     }
     pathIndex--;
     visited[from] = false;
+}
+
+void GraphView::bfs(int from, int to, std::vector<std::vector<int>>& adj)
+{
+    constexpr auto isNotVisited = [](int x, std::vector<int>& path) -> bool {
+        for (std::size_t i = 0; i < path.size(); ++i) {
+            if (path[i] == x) {
+                return false;
+            }
+        }
+        return true;
+    };
+    constexpr auto printFoundPath = [](std::vector<int>& path,
+                                        const std::map<TGraph::vertex_descriptor, std::string>& vertexMap) {
+        for (std::size_t i = 0; i < path.size(); ++i) {
+            std::cout
+                << vertexMap.at(path[i])
+                << '(' << path[i] << ')';
+            if (i < path.size() - 1) {
+                std::cout << " -> ";
+            }
+        }
+        std::cout << std::endl;
+    };
+    std::queue<std::vector<int>> queue;
+    std::vector<int> path;
+    path.push_back(from);
+    queue.push(path);
+    while (!queue.empty()) {
+        path = queue.front();
+        queue.pop();
+        int last = path[path.size() - 1];
+        if (last == to) {
+            printFoundPath(path, mVertexMap);
+        }
+        auto children = adj[last];
+        if (children.empty()) {
+            continue;
+        }
+        for (std::size_t i = 0; i < children.size(); ++i) {
+            if (isNotVisited(adj[last][i], path)) {
+                std::vector<int> nextPath(path);
+                nextPath.push_back(adj[last][i]);
+                queue.push(nextPath);
+            }
+        }
+    }
 }
