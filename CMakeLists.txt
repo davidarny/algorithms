@@ -11,6 +11,8 @@ find_package(Boost 1.6 REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
+include_directories(lib)
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 if (NOT DEFINED ENV{CI})

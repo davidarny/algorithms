@@ -1,7 +1,7 @@
-Moscow-Paris
-Paris-Berlin
-Paris-Kazan
-London-Paris
-Moscow-London
-Berlin-Paris
-Kazan-Moscow
+Moscow-Paris-HZ250
+Paris-Berlin-LK321
+Paris-Kazan-FR967
+London-Paris-BA001
+Moscow-London-XY121
+Berlin-Paris-PI876
+Kazan-Moscow-MZ129

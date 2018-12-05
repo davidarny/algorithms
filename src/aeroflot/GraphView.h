@@ -19,8 +19,10 @@ private:
     TGraph mGraph;
     std::map<TGraph::vertex_descriptor, std::string> mVertexMap;
     std::map<std::string, TGraph::vertex_descriptor> mIndexMap;
+    std::map<std::pair<int, int>, std::string> mHashMap;
+    bool mIsDebugMode = false;
 
-    std::pair<std::string, std::string> getFromToPair(const std::string& path);
+    std::tuple<std::string, std::string, std::string> getFromToPair(const std::string& path);
 
     void traverse(std::function<void(unsigned long, unsigned long)> callback);
 
@@ -42,6 +44,8 @@ public:
     void error(const std::exception& ex);
 
     void search(const std::string_view& from, const std::string_view& to, const std::string_view& type);
+
+    void debug(const bool debug);
 };
 
 #endif //ALGORITHMS_GRAPH_H
