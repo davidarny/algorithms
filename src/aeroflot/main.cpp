@@ -26,18 +26,29 @@ std::string_view path(char* argv[])
 int main(int argc, char* argv[])
 {
     GraphView graph;
-    constexpr std::string_view from = "Moscow";
-    constexpr std::string_view to = "Kazan";
-    constexpr std::string_view type = "BFS";
-    std::cout
-        << "Going from "
-        << from
-        << " to "
-        << to << ":"
-        << std::endl;
+    std::string from;
+    std::string to;
+    std::string type = "BFS";
     try {
         graph.parse(path(argv));
         graph.print();
+        std::cout << std::endl;
+
+        std::cout << "From: ";
+        std::cin >> from;
+        std::cout << std::endl;
+
+        std::cout << "To: ";
+        std::cin >> to;
+        std::cout << std::endl;
+
+        std::cout
+            << "Going from "
+            << from
+            << " to "
+            << to << "..."
+            << std::endl;
+
         std::cout << std::endl
                   << "Found: " << std::endl;
         graph.search(from, to, type);
