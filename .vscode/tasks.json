@@ -1,0 +1,92 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        // Windows 10 WSL
+        {
+            "label": "WSL cmake clear",
+            "type": "process",
+            "command": "bash",
+            "args": [
+                "-c",
+                "rm -rf cmake-build"
+            ],
+            "problemMatcher": [],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
+            "label": "WSL cmake mkdir",
+            "type": "process",
+            "command": "bash",
+            "args": [
+                "-c",
+                "mkdir cmake-build"
+            ],
+            "problemMatcher": [],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
+            "label": "WSL cmake init",
+            "type": "process",
+            "command": "bash",
+            "args": [
+                "-c",
+                "cmake -Bcmake-build -H. -DCMAKE_BUILD_TYPE=Debug -G 'Unix Makefiles'"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "dependsOn": [
+                "WSL cmake clear",
+                "WSL cmake mkdir"
+            ],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            }
+        },
+        {
+            "label": "WSL cmake build aeroflot",
+            "type": "process",
+            "command": "bash",
+            "args": [
+                "-c",
+                "cmake --build cmake-build --target aeroflot"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        }
+    ]
+}
