@@ -8,10 +8,7 @@
             "label": "WSL cmake clear",
             "type": "process",
             "command": "bash",
-            "args": [
-                "-c",
-                "rm -rf cmake-build"
-            ],
+            "args": ["-c", "rm -rf cmake-build"],
             "problemMatcher": [],
             "group": "build",
             "presentation": {
@@ -27,10 +24,7 @@
             "label": "WSL cmake mkdir",
             "type": "process",
             "command": "bash",
-            "args": [
-                "-c",
-                "mkdir cmake-build"
-            ],
+            "args": ["-c", "mkdir cmake-build"],
             "problemMatcher": [],
             "group": "build",
             "presentation": {
@@ -50,14 +44,9 @@
                 "-c",
                 "cmake -Bcmake-build -H. -DCMAKE_BUILD_TYPE=Debug -G 'Unix Makefiles'"
             ],
-            "problemMatcher": [
-                "$gcc"
-            ],
+            "problemMatcher": ["$gcc"],
             "group": "build",
-            "dependsOn": [
-                "WSL cmake clear",
-                "WSL cmake mkdir"
-            ],
+            "dependsOn": ["WSL cmake clear", "WSL cmake mkdir"],
             "presentation": {
                 "echo": true,
                 "reveal": "always",
@@ -71,13 +60,24 @@
             "label": "WSL cmake build aeroflot",
             "type": "process",
             "command": "bash",
-            "args": [
-                "-c",
-                "cmake --build cmake-build --target aeroflot"
-            ],
-            "problemMatcher": [
-                "$gcc"
-            ],
+            "args": ["-c", "cmake --build cmake-build --target aeroflot"],
+            "problemMatcher": ["$gcc"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
+        },
+        {
+            "label": "WSL cmake build phonebook",
+            "type": "process",
+            "command": "bash",
+            "args": ["-c", "cmake --build cmake-build --target phonebook"],
+            "problemMatcher": ["$gcc"],
             "group": "build",
             "presentation": {
                 "echo": true,
