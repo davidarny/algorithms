@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "/mnt/c/Users/${env:USERNAME}/${env:CPP_PROJECTS_DIR}/${workspaceFolderBasename}/bin/phonebook",
-            "args": [],
+            "args": ["--debug", "true", "--degree", "2"],
             "stopAtEntry": false,
             "cwd": "/mnt/c/Users/${env:USERNAME}/${env:CPP_PROJECTS_DIR}/${workspaceFolderBasename}",
             "environment": [],

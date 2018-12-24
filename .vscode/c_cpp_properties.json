@@ -3,29 +3,29 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/lib/**",
-                "${workspaceFolder}/src/**",
-                "${workspaceFolder}/test/**",
-                "${env:MINGW_INCLUDE_DIR}**"
+                "${workspaceFolder}/lib",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/test",
+                "${env:MINGW_INCLUDE_DIR}"
             ],
             "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
             "cppStandard": "c++17",
-            "intelliSenseMode": "clang-x64"
+            "intelliSenseMode": "gcc-x64"
         },
         {
             "name": "WSL",
             "includePath": [
-                "${workspaceFolder}/lib/**",
-                "${workspaceFolder}/src/**",
-                "${workspaceFolder}/test/**"
+                "${workspaceFolder}/lib",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/test"
             ],
             "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
             "cppStandard": "c++17",
-            "intelliSenseMode": "clang-x64"
+            "intelliSenseMode": "gcc-x64"
         }
     ],
     "version": 4
