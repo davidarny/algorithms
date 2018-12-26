@@ -11,12 +11,14 @@ gcc 8.1.0
 cmake 3.9.5
 */
 
+#include "BTree.h"
+#include "FileReader.h"
+#include "FileRepository.h"
+#include "FillService.h"
+#include "cxxopts/cxxopts.h"
 #include <iostream>
 #include <limits>
 #include <string>
-
-#include "BTree.h"
-#include "cxxopts/cxxopts.h"
 
 int main(int argc, char* argv[])
 {
@@ -29,20 +31,48 @@ int main(int argc, char* argv[])
     std::string mode;
 
     bool debug = true;
+    bool help = false;
 
     try {
         cxxopts::Options options("Phonebook", "Personal Phonebook driver");
-        options.add_options()("order", "B-tree maximum order (default = 4)", cxxopts::value<int>()->default_value("4"))("debug", "Specify if want to run in debug mode", cxxopts::value<bool>()->default_value("false"));
+        options.add_options()("order", "B-tree maximum order (default = 4)", cxxopts::value<int>()->default_value("4"))("debug", "Debug mode", cxxopts::value<bool>()->default_value("false"))("master", "Path to master DB", cxxopts::value<std::string>())("slave", "Path to slave DB", cxxopts::value<std::string>())("help", "Help info", cxxopts::value<bool>()->default_value("false"));
         auto result = options.parse(argc, argv);
+        help = result["help"].as<bool>();
+        if (help) {
+            std::cout
+                << "--order: B-tree maximum order (default = 4)\n"
+                << "--debug: Debug mode\n"
+                << "--master: Path to master DB\n"
+                << "--slave: Path to slave DB\n"
+                << "--help: Help info\n";
+            return EXIT_SUCCESS;
+        }
         debug = result["debug"].as<bool>();
         order = result["order"].as<int>();
-        degree = (degree + 1) / 2;
+        if (result.count("master") > 0) {
+            FileRepository::overrideMasterFilePath(result["master"].as<std::string>());
+        }
+        if (result.count("slave") > 0) {
+            FileRepository::overrideSlaveFilePath(result["slave"].as<std::string>());
+        }
 
-        BTree tree(degree);
+        if (order < 2) {
+            throw std::runtime_error("Order cannot be less then 2!");
+        }
+
+        BTree tree(order);
+
+        TFile master, slave;
+        {
+            FileReader reader(FileRepository::getMasterFilePath());
+            FileAdapter adapter(reader);
+            FillService::fill<int>(tree, adapter);
+        }
 
         while (true) {
             try {
-                std::cout << "Traversal of the B-tree(" << std::to_string(order) << ")"
+                std::cout << "Traversal of the B-tree("
+                          << std::to_string(order) << ")"
                           << " is " << std::endl;
                 tree.traverse();
                 std::cout << std::endl;
@@ -84,7 +114,6 @@ int main(int argc, char* argv[])
                           << "Internal error!" << std::endl;
             }
         }
-
     } catch (std::exception& ex) {
         std::cerr << "[ERROR]: " << ex.what() << std::endl;
     }
