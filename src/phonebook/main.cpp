@@ -15,6 +15,9 @@ cmake 3.9.5
 #include "FileReader.h"
 #include "FileRepository.h"
 #include "FillService.h"
+#include "MasterFileAdapter.h"
+#include "SlaveFileAdapter.h"
+#include "Table.h"
 #include "cxxopts/cxxopts.h"
 #include <iostream>
 #include <limits>
@@ -35,7 +38,11 @@ int main(int argc, char* argv[])
 
     try {
         cxxopts::Options options("Phonebook", "Personal Phonebook driver");
-        options.add_options()("order", "B-tree maximum order (default = 4)", cxxopts::value<int>()->default_value("4"))("debug", "Debug mode", cxxopts::value<bool>()->default_value("false"))("master", "Path to master DB", cxxopts::value<std::string>())("slave", "Path to slave DB", cxxopts::value<std::string>())("help", "Help info", cxxopts::value<bool>()->default_value("false"));
+        options.add_options()("order", "B-tree maximum order (default = 4)", cxxopts::value<int>()->default_value("4"))(
+            "debug", "Debug mode", cxxopts::value<bool>()->default_value("false"))("master", "Path to master DB",
+            cxxopts::value<std::string>())(
+            "slave", "Path to slave DB", cxxopts::value<std::string>())("help", "Help info",
+            cxxopts::value<bool>()->default_value("false"));
         auto result = options.parse(argc, argv);
         help = result["help"].as<bool>();
         if (help) {
@@ -61,12 +68,21 @@ int main(int argc, char* argv[])
         }
 
         BTree tree(order);
+        Table table;
+        table
+            .column("full_name")
+            .column("phone");
 
         TFile master, slave;
         {
             FileReader reader(FileRepository::getMasterFilePath());
-            FileAdapter adapter(reader);
+            MasterFileAdapter adapter(reader);
             FillService::fill<int>(tree, adapter);
+        }
+        {
+            FileReader reader(FileRepository::getSlaveFilePath());
+            SlaveFileAdapter adapter(reader);
+            FillService::fill(table, adapter);
         }
 
         while (true) {
