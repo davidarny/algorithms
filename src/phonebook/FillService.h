@@ -19,8 +19,7 @@ void FillService::fill(Insertable<T>& insertable, MasterFileAdapter& adapter)
 {
     auto map = adapter.convert();
     for (const auto& row : map) {
-        std::string copy(row.second);
-        insertable.insert(row.first);
+        insertable.insert(row.first, row.second);
     }
 }
 

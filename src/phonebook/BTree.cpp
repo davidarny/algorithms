@@ -23,7 +23,6 @@ BTreeNode* BTree::search(int key)
     return mRootNode->search(key);
 }
 
-// A function to update children[k] node
 void BTree::update(int key, int value)
 {
     auto node = search(key);
@@ -34,36 +33,50 @@ void BTree::update(int key, int value)
     node->updateByIndex(idx, value);
 }
 
-// The main function that inserts a new key in this B-Tree
-void BTree::insert(int key)
+void BTree::insert(int key, const std::string& id)
 {
     // If tree is empty
     if (mRootNode == nullptr) {
-        // Allocate memory for root
         mRootNode = new BTreeNode(mMinDegree, true);
-        mRootNode->mKeys[0] = key; // Insert key
-        mRootNode->mKeysCount = 1; // Update number of keys in root
+        mRootNode->mKeys[0] = key;
+        mRootNode->mKeysCount = 1;
+        mRootNode->mTableId = id;
     } else {
-        // If tree is not empty
-        // If root is full, then tree grows in height
         if (mRootNode->mKeysCount == 2 * mMinDegree - 1) {
-            // Allocate memory for new root
             auto* s = new BTreeNode(mMinDegree, false);
-            // Make old root as child of new root
+            s->mTableId = id;
             s->mChildren[0] = mRootNode;
-            // Split the old root and move 1 key to the new root
             s->splitChild(0, mRootNode);
-            // New root has two children now.  Decide which of the
-            // two children is going to have new key
             int i = 0;
             if (s->mKeys[0] < key) {
                 i++;
             }
             s->mChildren[i]->insertNonFull(key);
-            // Change root
             mRootNode = s;
         } else {
-            // If root is not full, call insertNonFull for root
+            mRootNode->insertNonFull(key);
+        }
+    }
+}
+
+void BTree::insert(int key)
+{
+    if (mRootNode == nullptr) {
+        mRootNode = new BTreeNode(mMinDegree, true);
+        mRootNode->mKeys[0] = key;
+        mRootNode->mKeysCount = 1;
+    } else {
+        if (mRootNode->mKeysCount == 2 * mMinDegree - 1) {
+            auto* s = new BTreeNode(mMinDegree, false);
+            s->mChildren[0] = mRootNode;
+            s->splitChild(0, mRootNode);
+            int i = 0;
+            if (s->mKeys[0] < key) {
+                i++;
+            }
+            s->mChildren[i]->insertNonFull(key);
+            mRootNode = s;
+        } else {
             mRootNode->insertNonFull(key);
         }
     }
@@ -75,10 +88,7 @@ void BTree::remove(int key)
         std::cout << "The tree is empty\n";
         return;
     }
-    // Call the remove function for root
     mRootNode->remove(key);
-    // If the root node has 0 keys, make its first child as the new root
-    //  if it has a child, otherwise set root as NULL
     if (mRootNode->mKeysCount == 0) {
         BTreeNode* tmp = mRootNode;
         if (mRootNode->mIsLeaf) {
@@ -86,7 +96,6 @@ void BTree::remove(int key)
         } else {
             mRootNode = mRootNode->mChildren[0];
         }
-        // Free the old root
         delete tmp;
     }
 }

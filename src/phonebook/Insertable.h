@@ -1,10 +1,14 @@
 #ifndef ALGORITHMS_INSERTABLE_H
 #define ALGORITHMS_INSERTABLE_H
 
-template <typename T>
+#include <string>
+
+template <typename K = int, typename V = const std::string&>
 class Insertable {
 public:
-    virtual void insert(T value) = 0;
+    virtual void insert(K key) = 0;
+
+    virtual void insert(K key, V value) = 0;
 };
 
 #endif //ALGORITHMS_INSERTABLE_H
