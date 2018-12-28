@@ -1,12 +1,12 @@
-#include "MasterFileAdapter.h"
+#include "FileAdapter.h"
 #include <boost/algorithm/string.hpp>
 
-std::map<int, std::string> MasterFileAdapter::convert()
+std::map<int, std::string> FileAdapter::convert()
 {
     return mContent;
 }
 
-void MasterFileAdapter::init(FileReader& reader)
+void FileAdapter::init(FileReader& reader)
 {
     auto map = reader.get();
     int index = 0;
@@ -27,12 +27,12 @@ void MasterFileAdapter::init(FileReader& reader)
     }
 }
 
-MasterFileAdapter::MasterFileAdapter(FileReader& reader)
+FileAdapter::FileAdapter(FileReader& reader)
 {
     init(reader);
 }
 
-bool MasterFileAdapter::is_number(const std::string& s)
+bool FileAdapter::is_number(const std::string& s)
 {
     std::string::const_iterator it = s.begin();
     while (it != s.end() && std::isdigit(*it))

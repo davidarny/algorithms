@@ -99,11 +99,6 @@ int BTreeNode::findKey(int key)
     return index;
 }
 
-void BTreeNode::updateByIndex(int index, int value)
-{
-    mKeys[index] = value;
-}
-
 void BTreeNode::remove(int key)
 {
     int index = findKey(key);

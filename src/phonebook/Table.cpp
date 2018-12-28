@@ -1,24 +1,60 @@
 #include "Table.h"
+#include "FileAdapter.h"
+#include "FileRepository.h"
+#include <algorithm>
+#include <fstream>
+#include <limits>
 
-Table& Table::column(const std::string& column)
+Table& Table::row(int id, const std::string& row)
 {
-    std::string copy(column);
-    mCols.emplace_back(copy);
+    mRows[id] = row;
     return *this;
 }
 
-Table& Table::row(const std::string& id, const std::vector<std::string>& row)
+int Table::getIdByValue(const std::string& value)
 {
-    int index = 0;
-    std::vector<std::pair<std::string, std::string>> vector;
-    for (const auto& col : mCols) {
-        if (index > row.size() - 1) {
-            continue;
+    int result = std::numeric_limits<int>::max();
+    for (const auto& item : mRows) {
+        auto id = item.first;
+        auto data = item.second;
+        if (data == value) {
+            result = id;
+            break;
         }
-        auto pair = std::pair(col, row.at(static_cast<unsigned long>(index)));
-        vector.emplace_back(pair);
-        index++;
     }
-    mRows[id] = vector;
+    return result;
+}
+
+std::string Table::getValueById(int id)
+{
+    std::string result;
+    for (const auto& item : mRows) {
+        if (item.first == id) {
+            result = item.second;
+            break;
+        }
+    }
+    return result;
+}
+
+Table& Table::setValueById(int id, std::string value)
+{
+    for (auto& item : mRows) {
+        if (item.first == id) {
+            item.second = value;
+            break;
+        }
+    }
+    sync();
     return *this;
+}
+
+void Table::sync()
+{
+    std::ofstream ofs;
+    ofs.open(FileRepository::getSlaveFilePath(), std::ofstream::out | std::ofstream::trunc);
+    for (const auto& item : mRows) {
+        ofs << item.first << FileAdapter::DELIMITER << item.second << std::endl;
+    }
+    ofs.close();
 }

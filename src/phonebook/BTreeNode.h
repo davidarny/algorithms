@@ -10,7 +10,6 @@ private:
     BTreeNode** mChildren;
     int mKeysCount;
     bool mIsLeaf;
-    std::string mTableId;
 
 public:
     BTreeNode(int degree, bool isLeaf);
@@ -26,8 +25,6 @@ public:
     int findKey(int key);
 
     void remove(int key);
-
-    void updateByIndex(int index, int value);
 
     void removeFromLeaf(int key);
 

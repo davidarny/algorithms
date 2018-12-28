@@ -6,17 +6,20 @@
 #include <string>
 #include <vector>
 
-using TRow = std::vector<std::pair<std::string, std::string>>;
-
 class Table {
 private:
-    std::vector<std::string> mCols;
-    std::map<std::string, TRow> mRows;
+    std::map<int, std::string> mRows;
+
+    void sync();
 
 public:
-    Table& column(const std::string& column);
+    Table& row(int id, const std::string& row);
 
-    Table& row(const std::string& id, const std::vector<std::string>& row);
+    int getIdByValue(const std::string& value);
+
+    std::string getValueById(int id);
+
+    Table& setValueById(int id, std::string value);
 };
 
 #endif //ALGORITHMS_TABLE_H

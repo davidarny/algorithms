@@ -12,11 +12,10 @@ cmake 3.9.5
 */
 
 #include "BTree.h"
+#include "FileAdapter.h"
 #include "FileReader.h"
 #include "FileRepository.h"
 #include "FillService.h"
-#include "MasterFileAdapter.h"
-#include "SlaveFileAdapter.h"
 #include "Table.h"
 #include "cxxopts/cxxopts.h"
 #include <iostream>
@@ -25,10 +24,10 @@ cmake 3.9.5
 
 int main(int argc, char* argv[])
 {
-    int search = std::numeric_limits<int>::max();
+    std::string search;
+    std::string update;
     int del = std::numeric_limits<int>::max();
     int insert = std::numeric_limits<int>::max();
-    int update = std::numeric_limits<int>::max();
     int degree = std::numeric_limits<int>::max();
     int order = std::numeric_limits<int>::max();
     std::string mode;
@@ -38,11 +37,7 @@ int main(int argc, char* argv[])
 
     try {
         cxxopts::Options options("Phonebook", "Personal Phonebook driver");
-        options.add_options()("order", "B-tree maximum order (default = 4)", cxxopts::value<int>()->default_value("4"))(
-            "debug", "Debug mode", cxxopts::value<bool>()->default_value("false"))("master", "Path to master DB",
-            cxxopts::value<std::string>())(
-            "slave", "Path to slave DB", cxxopts::value<std::string>())("help", "Help info",
-            cxxopts::value<bool>()->default_value("false"));
+        options.add_options()("order", "B-tree maximum order (default = 4)", cxxopts::value<int>()->default_value("4"))("debug", "Debug mode", cxxopts::value<bool>()->default_value("false"))("master", "Path to master DB", cxxopts::value<std::string>())("slave", "Path to slave DB", cxxopts::value<std::string>())("help", "Help info", cxxopts::value<bool>()->default_value("false"));
         auto result = options.parse(argc, argv);
         help = result["help"].as<bool>();
         if (help) {
@@ -68,21 +63,19 @@ int main(int argc, char* argv[])
         }
 
         BTree tree(order);
-        Table table;
-        table
-            .column("full_name")
-            .column("phone");
 
-        TFile master, slave;
+        Table t_master, t_slave;
+        TFile f_master, f_slave;
         {
             FileReader reader(FileRepository::getMasterFilePath());
-            MasterFileAdapter adapter(reader);
+            FileAdapter adapter(reader);
             FillService::fill<int>(tree, adapter);
+            FillService::fill(t_master, adapter);
         }
         {
             FileReader reader(FileRepository::getSlaveFilePath());
-            SlaveFileAdapter adapter(reader);
-            FillService::fill(table, adapter);
+            FileAdapter adapter(reader);
+            FillService::fill(t_slave, adapter);
         }
 
         while (true) {
@@ -93,18 +86,40 @@ int main(int argc, char* argv[])
                 tree.traverse();
                 std::cout << std::endl;
 
-                std::cout << "Working mode (insert, delete, search, update, exit): ";
-                std::cin >> mode;
+                std::cout << "Working mode (search, update, exit): ";
+                std::getline(std::cin, mode);
 
                 if (mode == "search") {
-                    std::cout << "Search node: ";
-                    std::cin >> search;
-
-                    std::cout << std::to_string(search) << " is ";
-                    if (tree.search(search) != nullptr) {
-                        std::cout << "present" << std::endl;
+                    std::cout << "Search phone: ";
+                    std::getline(std::cin, search);
+                    auto id = t_master.getIdByValue(search);
+                    if (id == std::numeric_limits<int>::max()) {
+                        throw std::runtime_error("No records found with phone " + search);
+                    }
+                    std::cout << search << " is ";
+                    auto node = tree.search(id);
+                    if (node != nullptr) {
+                        auto name = t_slave.getValueById(id);
+                        std::cout << name << std::endl;
                     } else {
                         std::cout << "not present" << std::endl;
+                    }
+                } else if (mode == "update") {
+                    std::cout << "Update phone: ";
+                    std::getline(std::cin, update);
+                    std::string buffer(update);
+                    std::cout << "With value: ";
+                    std::getline(std::cin, update);
+                    auto id = t_master.getIdByValue(buffer);
+                    if (id == std::numeric_limits<int>::max()) {
+                        throw std::runtime_error("No records found with phone " + buffer);
+                    }
+                    auto node = tree.search(id);
+                    if (node != nullptr) {
+                        auto name = t_slave.setValueById(id, update).getValueById(id);
+                        std::cout << name << std::endl;
+                    } else {
+                        throw std::runtime_error("No records found with phone " + buffer);
                     }
                 } else if (mode == "insert") {
                     std::cout << "Insert node: ";
@@ -114,20 +129,16 @@ int main(int argc, char* argv[])
                     std::cout << "Delete node: ";
                     std::cin >> del;
                     tree.remove(del);
-                } else if (mode == "update") {
-                    std::cout << "Update node: ";
-                    std::cin >> update;
-                    std::cout << "With value: ";
-                    std::cin >> insert;
-                    tree.update(update, insert);
                 } else if (mode == "exit") {
                     return EXIT_SUCCESS;
+                } else {
+                    throw std::runtime_error("Command not found!");
                 }
+                std::cout << std::endl;
             } catch (std::exception& ex) {
                 std::cerr << "[ERROR]: " << ex.what() << std::endl;
             } catch (...) {
-                std::cerr << "[ERROR]: "
-                          << "Internal error!" << std::endl;
+                std::cerr << "[ERROR]: Internal error!" << std::endl;
             }
         }
     } catch (std::exception& ex) {
