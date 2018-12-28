@@ -18,7 +18,7 @@ public:
 
     void splitChild(int key, BTreeNode* node);
 
-    void traverse();
+    void traverse(int depth);
 
     BTreeNode* search(int key);
 

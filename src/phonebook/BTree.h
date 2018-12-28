@@ -12,7 +12,7 @@ private:
 public:
     explicit BTree(int degree);
 
-    void traverse();
+    void traverse(int depth);
 
     BTreeNode* search(int key);
 

@@ -10,16 +10,20 @@ class Table {
 private:
     std::map<int, std::string> mRows;
 
-    void sync();
-
 public:
+    void sync(const std::string& path);
+
     Table& row(int id, const std::string& row);
 
     int getIdByValue(const std::string& value);
 
     std::string getValueById(int id);
 
-    Table& setValueById(int id, std::string value);
+    Table& setValueById(int id, std::string value, const std::string& path);
+
+    int getMaxId();
+
+    Table& deleteValueById(int id);
 };
 
 #endif //ALGORITHMS_TABLE_H

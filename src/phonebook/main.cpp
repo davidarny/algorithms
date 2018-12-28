@@ -26,8 +26,8 @@ int main(int argc, char* argv[])
 {
     std::string search;
     std::string update;
-    int del = std::numeric_limits<int>::max();
-    int insert = std::numeric_limits<int>::max();
+    std::string del;
+    std::string insert;
     int degree = std::numeric_limits<int>::max();
     int order = std::numeric_limits<int>::max();
     std::string mode;
@@ -37,7 +37,11 @@ int main(int argc, char* argv[])
 
     try {
         cxxopts::Options options("Phonebook", "Personal Phonebook driver");
-        options.add_options()("order", "B-tree maximum order (default = 4)", cxxopts::value<int>()->default_value("4"))("debug", "Debug mode", cxxopts::value<bool>()->default_value("false"))("master", "Path to master DB", cxxopts::value<std::string>())("slave", "Path to slave DB", cxxopts::value<std::string>())("help", "Help info", cxxopts::value<bool>()->default_value("false"));
+        options.add_options()("order", "B-tree maximum order (default = 4)", cxxopts::value<int>()->default_value("4"))(
+            "debug", "Debug mode", cxxopts::value<bool>()->default_value("false"))("master", "Path to master DB",
+            cxxopts::value<std::string>())(
+            "slave", "Path to slave DB", cxxopts::value<std::string>())("help", "Help info",
+            cxxopts::value<bool>()->default_value("false"));
         auto result = options.parse(argc, argv);
         help = result["help"].as<bool>();
         if (help) {
@@ -58,8 +62,8 @@ int main(int argc, char* argv[])
             FileRepository::overrideSlaveFilePath(result["slave"].as<std::string>());
         }
 
-        if (order < 2) {
-            throw std::runtime_error("Order cannot be less then 2!");
+        if (order < 3) {
+            throw std::runtime_error("Order cannot be less then 3!");
         }
 
         BTree tree(order);
@@ -83,10 +87,10 @@ int main(int argc, char* argv[])
                 std::cout << "Traversal of the B-tree("
                           << std::to_string(order) << ")"
                           << " is " << std::endl;
-                tree.traverse();
+                tree.traverse(1);
                 std::cout << std::endl;
 
-                std::cout << "Working mode (search, update, exit): ";
+                std::cout << "Working mode (search, update, insert, delete, exit): ";
                 std::getline(std::cin, mode);
 
                 if (mode == "search") {
@@ -116,19 +120,31 @@ int main(int argc, char* argv[])
                     }
                     auto node = tree.search(id);
                     if (node != nullptr) {
-                        auto name = t_slave.setValueById(id, update).getValueById(id);
+                        auto name = t_slave.setValueById(
+                                               id,
+                                               update,
+                                               FileRepository::getSlaveFilePath())
+                                        .getValueById(id);
                         std::cout << name << std::endl;
                     } else {
                         throw std::runtime_error("No records found with phone " + buffer);
                     }
                 } else if (mode == "insert") {
-                    std::cout << "Insert node: ";
-                    std::cin >> insert;
-                    tree.insert(insert);
+                    std::cout << "Insert phone: ";
+                    std::getline(std::cin, insert);
+                    std::string buffer(insert);
+                    std::cout << "With value: ";
+                    std::getline(std::cin, insert);
+                    tree.insert(t_master.getMaxId() + 1);
+                    t_master.row(t_master.getMaxId() + 1, buffer).sync(FileRepository::getMasterFilePath());
+                    t_slave.row(t_slave.getMaxId() + 1, insert).sync(FileRepository::getSlaveFilePath());
                 } else if (mode == "delete") {
-                    std::cout << "Delete node: ";
-                    std::cin >> del;
-                    tree.remove(del);
+                    std::cout << "Delete phone: ";
+                    std::getline(std::cin, del);
+                    auto id = t_master.getIdByValue(del);
+                    tree.remove(id);
+                    t_master.deleteValueById(id).sync(FileRepository::getMasterFilePath());
+                    t_slave.deleteValueById(id).sync(FileRepository::getSlaveFilePath());
                 } else if (mode == "exit") {
                     return EXIT_SUCCESS;
                 } else {

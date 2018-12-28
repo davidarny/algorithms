@@ -1,6 +1,5 @@
 #include "Table.h"
 #include "FileAdapter.h"
-#include "FileRepository.h"
 #include <algorithm>
 #include <fstream>
 #include <limits>
@@ -37,7 +36,7 @@ std::string Table::getValueById(int id)
     return result;
 }
 
-Table& Table::setValueById(int id, std::string value)
+Table& Table::setValueById(int id, std::string value, const std::string& path)
 {
     for (auto& item : mRows) {
         if (item.first == id) {
@@ -45,16 +44,33 @@ Table& Table::setValueById(int id, std::string value)
             break;
         }
     }
-    sync();
+    sync(path);
     return *this;
 }
 
-void Table::sync()
+void Table::sync(const std::string& path)
 {
     std::ofstream ofs;
-    ofs.open(FileRepository::getSlaveFilePath(), std::ofstream::out | std::ofstream::trunc);
+    ofs.open(path, std::ofstream::out | std::ofstream::trunc);
     for (const auto& item : mRows) {
         ofs << item.first << FileAdapter::DELIMITER << item.second << std::endl;
     }
     ofs.close();
+}
+
+int Table::getMaxId()
+{
+    int result = 0;
+    for (const auto& item : mRows) {
+        if (item.first > result) {
+            result = item.first;
+        }
+    }
+    return result;
+}
+
+Table& Table::deleteValueById(int id)
+{
+    mRows.erase(id);
+    return *this;
 }

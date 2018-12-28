@@ -7,12 +7,12 @@ BTree::BTree(int degree)
     mMinDegree = degree;
 }
 
-void BTree::traverse()
+void BTree::traverse(int depth)
 {
     if (mRootNode == nullptr) {
         return;
     }
-    mRootNode->traverse();
+    mRootNode->traverse(depth);
 }
 
 BTreeNode* BTree::search(int key)

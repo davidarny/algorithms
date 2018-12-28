@@ -1,3 +1,4 @@
+#include <iomanip>
 #include <iostream>
 
 #include "BTreeNode.h"
@@ -11,20 +12,25 @@ BTreeNode::BTreeNode(int degree, bool isLeaf)
     mKeysCount = 0;
 }
 
-void BTreeNode::traverse()
+void BTreeNode::traverse(int depth)
 {
     int index;
+    std::cout << std::setw(depth) << "[";
     for (index = 0; index < mKeysCount; index++) {
-        std::cout << " " << mKeys[index];
+        std::cout << mKeys[index];
+        if (index != mKeysCount - 1) {
+            std::cout << " ";
+        }
     }
-    std::cout << std::endl;
+    int nextDepth = ++depth;
+    std::cout << "]" << std::endl;
     for (index = 0; index < mKeysCount; index++) {
         if (!mIsLeaf) {
-            mChildren[index]->traverse();
+            mChildren[index]->traverse(nextDepth);
         }
     }
     if (!mIsLeaf) {
-        mChildren[index]->traverse();
+        mChildren[index]->traverse(nextDepth);
     }
 }
 
