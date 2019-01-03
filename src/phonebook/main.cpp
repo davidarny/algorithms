@@ -11,6 +11,10 @@ gcc 8.1.0
 cmake 3.9.5
 */
 
+#include <iostream>
+#include <limits>
+#include <string>
+
 #include "BTree.h"
 #include "FileAdapter.h"
 #include "FileReader.h"
@@ -18,9 +22,6 @@ cmake 3.9.5
 #include "FillService.h"
 #include "Table.h"
 #include "cxxopts/cxxopts.h"
-#include <iostream>
-#include <limits>
-#include <string>
 
 int main(int argc, char* argv[])
 {
@@ -82,15 +83,24 @@ int main(int argc, char* argv[])
             FillService::fill(t_slave, adapter);
         }
 
+        std::cout << "--------------------Welcome to Phonebook REPL!--------------------"
+                  << std::endl
+                  << "Available commands:" << std::endl
+                  << std::string(2, ' ') << "search - search record by phone number" << std::endl
+                  << std::string(2, ' ') << "update - update record by phone number" << std::endl
+                  << std::string(2, ' ') << "insert - insert new phone number" << std::endl
+                  << std::string(2, ' ') << "delete - delete record from book" << std::endl
+                  << std::string(2, ' ') << "clear - clear REPL" << std::endl
+                  << std::string(2, ' ') << "exit - exit from REPL" << std::endl
+                  << std::endl;
         while (true) {
             try {
                 std::cout << "Traversal of the B-tree("
                           << std::to_string(order) << ")"
                           << " is " << std::endl;
-                tree.traverse(1);
+                tree.traverse(0);
                 std::cout << std::endl;
 
-                std::cout << "Working mode (search, update, insert, delete, exit): ";
                 std::getline(std::cin, mode);
 
                 if (mode == "search") {
@@ -100,12 +110,13 @@ int main(int argc, char* argv[])
                     if (id == std::numeric_limits<int>::max()) {
                         throw std::runtime_error("No records found with phone " + search);
                     }
-                    std::cout << search << " is ";
                     auto node = tree.search(id);
                     if (node != nullptr) {
+                        std::cout << search << " is ";
                         auto name = t_slave.getValueById(id);
                         std::cout << name << std::endl;
                     } else {
+                        std::cout << search << " is ";
                         std::cout << "not present" << std::endl;
                     }
                 } else if (mode == "update") {
@@ -147,6 +158,15 @@ int main(int argc, char* argv[])
                     t_slave.deleteValueById(id).sync(FileRepository::getSlaveFilePath());
                 } else if (mode == "exit") {
                     return EXIT_SUCCESS;
+                } else if (mode == "clear") {
+                    try {
+#ifdef _WIN32
+                        system("cls");
+#else
+                        system("clear");
+#endif
+                    } catch (...) {
+                    }
                 } else {
                     throw std::runtime_error("Command not found!");
                 }

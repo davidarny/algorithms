@@ -17,10 +17,20 @@ void BTree::traverse(int depth)
 
 BTreeNode* BTree::search(int key)
 {
+    int depth = 0;
     if (mRootNode == nullptr) {
         return nullptr;
     }
-    return mRootNode->search(key);
+    std::cout << "--------------------------------------------------"
+              << std::endl
+              << "Searching key \""
+              << std::to_string(key)
+              << "\""
+              << std::endl;
+    auto result = mRootNode->search(key, ++depth);
+    std::cout << "--------------------------------------------------"
+              << std::endl;
+    return result;
 }
 
 void BTree::insert(int key)

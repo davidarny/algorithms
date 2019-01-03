@@ -20,7 +20,7 @@ public:
 
     void traverse(int depth);
 
-    BTreeNode* search(int key);
+    BTreeNode* search(int key, int depth);
 
     int findKey(int key);
 

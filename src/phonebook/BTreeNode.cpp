@@ -1,4 +1,3 @@
-#include <iomanip>
 #include <iostream>
 
 #include "BTreeNode.h"
@@ -15,7 +14,7 @@ BTreeNode::BTreeNode(int degree, bool isLeaf)
 void BTreeNode::traverse(int depth)
 {
     int index;
-    std::cout << std::setw(depth) << "[";
+    std::cout << std::string(static_cast<unsigned long>(depth * 2), ' ') << "[";
     for (index = 0; index < mKeysCount; index++) {
         std::cout << mKeys[index];
         if (index != mKeysCount - 1) {
@@ -34,19 +33,32 @@ void BTreeNode::traverse(int depth)
     }
 }
 
-BTreeNode* BTreeNode::search(int key)
+BTreeNode* BTreeNode::search(int key, int depth)
 {
     int index = 0;
     while (index < mKeysCount && key > mKeys[index]) {
         index++;
     }
     if (mKeys[index] == key) {
+        std::cout << "Found key \""
+                  << std::to_string(key)
+                  << "\""
+                  << " on level \""
+                  << std::to_string(depth)
+                  << "\""
+                  << std::endl;
         return this;
     }
     if (mIsLeaf) {
         return nullptr;
     }
-    return mChildren[index]->search(key);
+    std::cout << "Got index closest \""
+              << std::to_string(index)
+              << "\" on level \""
+              << std::to_string(depth)
+              << "\""
+              << std::endl;
+    return mChildren[index]->search(key, ++depth);
 }
 
 void BTreeNode::insertNonFull(int key)
